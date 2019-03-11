@@ -1,0 +1,26 @@
+17/08/2015
+
+LIVRO
+ - extração com extensão (*.txt)
+ - totalizador com filtro não totaliza qt.exemplar
+ 
+LOCACAO
+ - na informação da descrição trazer lista quando tiver mais de um nome quando digitado 
+   parte do nome fazer a busca ou qualquer: quando 1 gerar o codigo; quando mais de 1 gerar lista
+ - ao clicar na opção de impressão dá erro "PrinterSettingesUseStandardprinter"
+   
+INFLIV
+ - fazer a consulta nos campos descrição igual a tela de locação
+ 
+10/08/2015
+
+LOCACAO
+ - no campo nome fazer igual ao cadastro digitar nome trazer codigo (locador / livro)
+ - incluir filtro de codigo de turma para separar a cobranca por turma
+ 
+LIVRO 
+ - incluir totalizador da consulta de acervo de livro cadastrado
+ - na consulta ter opção para extrair para arquivo CSV, EXCEL
+ 
+CONSULTA
+ - impressaõ acervo está imprimindo no filtro a expressão /*WHERE*/
