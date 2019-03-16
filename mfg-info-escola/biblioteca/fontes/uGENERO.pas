@@ -22,9 +22,9 @@ implementation
 procedure TfGENERO.FormCreate(Sender: TObject);
 begin
   inherited;
-  cTabMan := 'GER_GENERO';
-  cKeyMan := 'CD_GENERO';
-  cIncMan := 'CD_GENERO';
+  _TabMan := 'GER_GENERO';
+  _KeyMan := 'CD_GENERO';
+  _IncMan := 'CD_GENERO';
 end;
 
 initialization

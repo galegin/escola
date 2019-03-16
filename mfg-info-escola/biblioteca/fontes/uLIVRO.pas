@@ -49,16 +49,16 @@ uses
 
 procedure TfLIVRO.FormCreate(Sender: TObject);
 begin
-  inherited;
-
-  cTabMan := 'GER_LIVRO';
-  cKeyMan := 'CD_LIVRO';
-  cIncMan := 'CD_LIVRO';
+  _TabMan := 'GER_LIVRO';
+  _KeyMan := 'CD_LIVRO';
+  _IncMan := 'CD_LIVRO';
 
   fCD_CURSO.Tag := TAG_FK;
   fCD_GENERO.Tag := TAG_FK;
   fCD_EDITORA.Tag := TAG_FK;
   fTP_ENSINO.Tag := TAG_FK;
+
+  inherited;
 end;
 
 procedure TfLIVRO.ToolButtonConsultarClick(Sender: TObject);

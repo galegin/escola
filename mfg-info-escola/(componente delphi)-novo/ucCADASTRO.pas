@@ -7,7 +7,7 @@ uses
   Dialogs, ComCtrls, ToolWin, Grids, DBGrids, Buttons, StdCtrls, ExtCtrls,
   DB, DBClient, ImgList, Provider, DBTables, Mask, StrUtils, DBCtrls, TeeProcs,
   TeEngine, Chart, MidasLib, FMTBcd, SqlExpr, Menus, dbcgrids, ucFORM,
-  ucCONFIMPRESSAO, ucTIPOIMPRESSAO;
+  ucCONFIMPRESSAO, ucTIPOIMPRESSAO, ucCONFCAMPO;
 
 type
   TcCADASTRO = class(TcFORM)
@@ -122,12 +122,12 @@ begin
   cTipoClasseForm := tcfCadastro;
 
   Caption := Copy(Caption,2,Length(Caption)-1);
-  cCaption := Caption;
-  cCaptionRel := cCaption;
+  _Caption := Caption;
+  _CaptionRel := Caption;
 
-  Panel5.Visible := IfNullB(LerIni(cCaption, FIL_MAN), True);
+  Panel5.Visible := IfNullB(LerIni(_Caption, FIL_MAN), True);
 
-  cColMan := IfNullS(LerIni(cCaption, COL_MAN), cColMan);
+  //cColMan := IfNullS(LerIni(_Caption, COL_MAN), cColMan);
 
   bCpoMan := False;
   bDplMan := True;
@@ -142,8 +142,8 @@ end;
 
 procedure TcCADASTRO.FormShow(Sender: TObject);
 begin
-  if (cSQL = '') and (cTabMan <> '') then
-    cSQL := 'select * from ' + cTabMan + ' where TP_SITUACAO = 1 ';
+  if (cSQL = '') and (_TabMan <> '') then
+    cSQL := 'select * from ' + _TabMan + ' where TP_SITUACAO = 1 ';
 
   p_Consultar(cSQL, REG_LIMPO);
   p_CriarCampos(ScrollBox1);
@@ -161,10 +161,10 @@ begin
   p_HabilitaModoFormulario;
 
   TcCADASTROFUNC.CarregaCamposFiltro(CD_CAMPO.Items, _DataSet);
-  TP_CONSULTA.ItemIndex := IfNullI(LerIni(cCaption, TIP_CNS), 2);
-  CD_CAMPO.ItemIndex := IfNullI(LerIni(cCaption, COD_CNS), -1);
+  TP_CONSULTA.ItemIndex := IfNullI(LerIni(_Caption, TIP_CNS), 2);
+  CD_CAMPO.ItemIndex := IfNullI(LerIni(_Caption, COD_CNS), -1);
 
-  if (Hint <> '') and (cKeyMan <> '') then begin
+  if (Hint <> '') and (_KeyMan <> '') then begin
     ToolButtonConsultar.Click;
   end else if (bAutMan) then begin
     ToolButtonConsultar.Click;
@@ -213,7 +213,7 @@ begin
     VK_F8: ClickButton('ToolButtonExcluir');
     VK_F12: begin
       if (PageControl1.ActivePage = TabSheet1) then begin
-        if (cKeyMan <> '') then Hint := item(cKeyMan, _DataSet);
+        if (_KeyMan <> '') then Hint := item(_KeyMan, _DataSet);
         ModalResult := mrOk;
         Key := 0;
       end;
@@ -223,15 +223,14 @@ end;
 
 procedure TcCADASTRO.FormResize(Sender: TObject);
 begin
-  inherited;
-  //PanelImpressao.Left := (Width div 2) - (PanelImpressao.Width div 2);
+  inherited; //
 end;
 
 //------------------------------------------------------------------------------
 
 procedure TcCADASTRO.ToolButtonNovoClick(Sender: TObject);
 begin
-  if not dDADOS.f_VerPrivilegio(cTabMan,'IN_INCLUIR') then
+  if not dDADOS.f_VerPrivilegio(_TabMan,'IN_INCLUIR') then
     Exit;
 
   EditCancel.SetFocus;
@@ -255,7 +254,7 @@ begin
 
   p_MontaTabela;
 
-  if not dDADOS.f_VerPrivilegio(cTabMan,'IN_ALTERAR') then
+  if not dDADOS.f_VerPrivilegio(_TabMan,'IN_ALTERAR') then
     Exit;
 
   _DataSet.Edit;
@@ -272,7 +271,7 @@ begin
   if _DataSet.IsEmpty then
     raise Exception.Create(cMESSAGE_CONSULTAVAZIA);
 
-  if not dDADOS.f_VerPrivilegio(cTabMan,'IN_EXCLUIR') then
+  if not dDADOS.f_VerPrivilegio(_TabMan,'IN_EXCLUIR') then
     Exit;
 
   if not Pergunta('Deseja excluir registro?') then
@@ -289,17 +288,17 @@ var
 begin
   vTpPrivilegio := IfThen(_DataSet.State in [dsInsert], 'IN_INCLUIR', 'IN_ALTERAR');
 
-  if not dDADOS.f_VerPrivilegio(cTabMan, vTpPrivilegio) then
+  if not dDADOS.f_VerPrivilegio(_TabMan, vTpPrivilegio) then
     Exit;
 
   EditCancel.SetFocus;
   p_DesCarregarCampos;
 
-  dDADOS.p_IncrementoCodigo(_DataSet, cTabMan, cIncMan, f_GerarChave);
+  dDADOS.p_IncrementoCodigo(_DataSet, _TabMan, _IncMan, f_GerarChave);
   if not f_VerObrigatorio then
     Exit;
 
-  TcLOGALTERACAO.Gravar(_DataSet, cTabMan, cLogMan);
+  TcLOGALTERACAO.Gravar(_DataSet, _TabMan, cLogMan);
 
   _DataSet.Post;
 
@@ -360,7 +359,7 @@ begin
   if _DataSet.IsEmpty then
     raise Exception.Create(cMESSAGE_NENHUMREGISTRO);
 
-  if not dDADOS.f_VerPrivilegio(cTabMan, 'IN_IMPRIMIR') then
+  if not dDADOS.f_VerPrivilegio(_TabMan, 'IN_IMPRIMIR') then
     Exit;
 
   vTipoImpressao := tpiVisualizar;
@@ -370,7 +369,7 @@ begin
     Exit;
 
   if (vTipoImpressao in [tpiVisualizar]) then begin
-    TcRELATORIO.Executar(_DataSet, cCaptionRel, f_ObterFiltroSQL, cSQL, nil);
+    TcRELATORIO.Executar(_DataSet, _CaptionRel, f_ObterFiltroSQL, cSQL, nil);
     Exit;
   end;
 
@@ -406,7 +405,7 @@ begin
   CarregarRegistro();
 
   repeat
-    TcRELATORIO.Executar(vClientDataSet, cCaptionRel, f_ObterFiltroSQL, cSQL, nil);
+    TcRELATORIO.Executar(vClientDataSet, _CaptionRel, f_ObterFiltroSQL, cSQL, nil);
 
     if not _DataSet.EOF then begin
       if (vQtdTot > vQtdImp) then begin
@@ -497,9 +496,9 @@ procedure TcCADASTRO.ToolButtonProximoClick(Sender: TObject);
 var
   vEdit : TEdit;
 begin
-  vEdit := TEdit(FindComponent(cIncMan));
+  vEdit := TEdit(FindComponent(_IncMan));
   if vEdit <> nil then begin
-    vEdit.Text := IntToStr(dDADOS.f_IncrementoCodigo(cTabMan, cIncMan));
+    vEdit.Text := IntToStr(dDADOS.f_IncrementoCodigo(_TabMan, _IncMan));
     vEdit.SetFocus;
   end;
 end;
@@ -565,12 +564,12 @@ begin
   else
     p_HabilitaBotao(True);
 
-  Caption := cCaption;
+  Caption := _Caption;
 
   case _DataSet.State of
-    dsBrowse: Caption := cCaption + ' - Consultando';
-    dsInsert: Caption := cCaption + ' - Inserindo';
-    dsEdit: Caption := cCaption + ' - Alterando';
+    dsBrowse: Caption := _Caption + ' - Consultando';
+    dsInsert: Caption := _Caption + ' - Inserindo';
+    dsEdit: Caption := _Caption + ' - Alterando';
   end;  
 end;
 
@@ -650,7 +649,7 @@ begin
   vParams := '';
   putitemX(vParams, 'DS_DIR', GetCurrentDir());
   putitemX(vParams, 'DS_FIL', 'Arquivo TEXTO (*.txt)|*.txt');
-  putitemX(vParams, 'DS_ARQ', AnsiReplaceStr(cTabMan, 'GER_', '') + '.txt');
+  putitemX(vParams, 'DS_ARQ', AnsiReplaceStr(_TabMan, 'GER_', '') + '.txt');
   vArquivo := TcARQUIVO.dialogSave(vParams);
   if vArquivo = '' then
     Exit;

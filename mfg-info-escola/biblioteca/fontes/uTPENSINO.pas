@@ -21,9 +21,9 @@ implementation
 procedure TfTPENSINO.FormCreate(Sender: TObject);
 begin
   inherited;
-  cTabMan := 'GER_TPENSINO';
-  cKeyMan := 'TP_ENSINO';
-  cIncMan := 'TP_ENSINO';
+  _TabMan := 'GER_TPENSINO';
+  _KeyMan := 'TP_ENSINO';
+  _IncMan := 'TP_ENSINO';
 end;
 
 initialization

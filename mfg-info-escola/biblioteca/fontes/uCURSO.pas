@@ -22,9 +22,9 @@ implementation
 procedure TfCURSO.FormCreate(Sender: TObject);
 begin
   inherited;
-  cTabMan := 'GER_CURSO';
-  cKeyMan := 'CD_CURSO';
-  cIncMan := 'CD_CURSO';
+  _TabMan := 'GER_CURSO';
+  _KeyMan := 'CD_CURSO';
+  _IncMan := 'CD_CURSO';
 end;
 
 initialization

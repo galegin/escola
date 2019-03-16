@@ -66,11 +66,9 @@ var
   MyStringList : TStringList;
   vSqlQuery : TSqlQuery;
   vPk : Boolean;
-  I : Integer;
 begin
   vCdChave := '';
   vDsLog := '';
-  vPk := True;
 
   if C.IsEmpty then
     raise Exception.Create(cMESSAGE_NENHUMREGISTRO);

@@ -6,8 +6,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ComCtrls, ToolWin, StdCtrls, ExtCtrls, DBClient, Buttons,
   IdBaseComponent, IdComponent, IdTCPConnection, IdTCPClient,
-  {$IFDEF VER230} IdAttachmentFile, {$ENDIF}
-  IdMessageClient, IdSMTP, IdMessage, IdSSLOpenSSL;
+  IdAttachmentFile, IdMessageClient, IdSMTP, IdMessage, IdSSLOpenSSL;
 
 type
   TcEMAIL = class(TForm)
@@ -95,9 +94,7 @@ const
   cMETHOD = 'TcEMAIL.EnviaEmailAuto()';
 var
   vLstAnexo, vAnexo : String;
-  {$IFDEF VER230} IdSSLIOHandlerSocket : TIdSSLIOHandlerSocketOpenSSL;
-  {$ELSE} IdSSLIOHandlerSocket : TIdSSLIOHandlerSocket;
-  {$ENDIF}
+  IdSSLIOHandlerSocket : TIdSSLIOHandlerSocketOpenSSL;
   IdMessage : TIdMessage;
   IdSMTP : TIdSMTP;
 begin
@@ -139,9 +136,7 @@ begin
     if vAnexo = '' then Break;
     delitem(vLstAnexo);
 
-    {$IFDEF VER230} TIdAttachmentFile.Create(IdMessage.MessageParts, vAnexo);
-    {$ELSE} TIdAttachment.Create(IdMessage.MessageParts, vAnexo);
-    {$ENDIF}
+    TIdAttachmentFile.Create(IdMessage.MessageParts, vAnexo);
   end;
 
   //Tipo de conteudo
@@ -161,20 +156,14 @@ begin
 
   //-- requer autenticacao
   if FInSMTP then begin
-    {$IFDEF VER230} IdSMTP.AuthType := satSASL
-    {$ELSE} IdSMTP.AuthenticationType:= atLogin
-    {$ENDIF}
+    IdSMTP.AuthType := satSASL
   end else begin
-    {$IFDEF VER230} IdSMTP.AuthType := satNone
-    {$ELSE} IdSMTP.AuthenticationType := atNone;
-    {$ENDIF}
+    IdSMTP.AuthType := satNone
   end;
 
   //-- conexao segura SSL
   if FInSSL then begin
-    {$IFDEF VER230} IdSSLIOHandlerSocket := TIdSSLIOHandlerSocketOpenSSL.Create(nil);
-    {$ELSE} IdSSLIOHandlerSocket := TIdSSLIOHandlerSocket.Create(nil);
-    {$ENDIF}
+    IdSSLIOHandlerSocket := TIdSSLIOHandlerSocketOpenSSL.Create(nil);
     IdSSLIOHandlerSocket.SSLOptions.Method := sslvSSLv3; //sslvTLSv1; //sslvSSLv2;
     IdSSLIOHandlerSocket.SSLOptions.Mode := sslmClient;  //sslmUnassigned;
     IdSMTP.IOHandler := IdSSLIOHandlerSocket;

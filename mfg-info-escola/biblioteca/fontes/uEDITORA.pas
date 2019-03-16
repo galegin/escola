@@ -22,9 +22,9 @@ implementation
 procedure TfEDITORA.FormCreate(Sender: TObject);
 begin
   inherited;
-  cTabMan := 'GER_EDITORA';
-  cKeyMan := 'CD_EDITORA';
-  cIncMan := 'CD_EDITORA';
+  _TabMan := 'GER_EDITORA';
+  _KeyMan := 'CD_EDITORA';
+  _IncMan := 'CD_EDITORA';
 end;
 
 initialization

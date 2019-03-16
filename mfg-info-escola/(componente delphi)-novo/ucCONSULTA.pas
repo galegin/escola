@@ -84,18 +84,18 @@ end;
 
 procedure TcCONSULTA.FormShow(Sender: TObject);
 begin
-  cCaption := item('DS_CAPTION', _Params);
-  cCaptionRel := cCaption;
-  cTabMan := item('DS_TABELA', _Params);
-  cSQL := 'select * from ' + cTabMan + ' where TP_SITUACAO = 1';
-  Caption := cCaption;
+  _Caption := item('DS_CAPTION', _Params);
+  _CaptionRel := _Caption;
+  _TabMan := item('DS_TABELA', _Params);
+  cSQL := 'select * from ' + _TabMan + ' where TP_SITUACAO = 1';
+  Caption := _Caption;
   p_Consultar(cSQL,REG_LIMPO);
   
   inherited;
   
   TcCADASTROFUNC.CarregaCamposFiltro(CD_CAMPO.Items,_DataSet);
-  TP_CONSULTA.ItemIndex := IfNullI(LerIni(cCaption, TIP_CNS), 0);
-  CD_CAMPO.ItemIndex := IfNullI(LerIni(cCaption, COD_CNS), -1);
+  TP_CONSULTA.ItemIndex := IfNullI(LerIni(_Caption, TIP_CNS), 0);
+  CD_CAMPO.ItemIndex := IfNullI(LerIni(_Caption, COD_CNS), -1);
   
   if (bAutMan) then ToolButtonConsultar.Click;
   if (Panel1.Visible) then fDS_EXPRESSAO.SetFocus;
@@ -107,13 +107,13 @@ procedure TcCONSULTA.ToolButtonNovoClick(Sender: TObject);
 var
   vParams, vResult : String;
 begin
-  if not dDADOS.f_VerPrivilegio(cTabMan,'IN_INCLUIR') then
+  if not dDADOS.f_VerPrivilegio(_TabMan,'IN_INCLUIR') then
     Exit;
 
   putitem(vParams,'IN_CONSULTA', 'FALSE');
   putitem(vParams,'IN_INCLUIR', 'TRUE');
-  putitem(vParams,'DS_CAPTION', cCaption);
-  putitem(vParams,'DS_TABELA', cTabMan);
+  putitem(vParams,'DS_CAPTION', _Caption);
+  putitem(vParams,'DS_TABELA', _TabMan);
   putitem(vParams,'DS_SQL', cSQL);
 
   vResult := TcMANUTENCAO.Execute(vParams);
@@ -129,13 +129,13 @@ begin
   if _DataSet.IsEmpty then
     raise Exception.Create(cMESSAGE_CONSULTAVAZIA);
 
-  if not dDADOS.f_VerPrivilegio(cTabMan,'IN_ALTERAR') then
+  if not dDADOS.f_VerPrivilegio(_TabMan,'IN_ALTERAR') then
     Exit;
 
   putitem(vParams,'IN_CONSULTA', 'FALSE');
   putitem(vParams,'IN_ALTERAR', 'TRUE');
-  putitem(vParams,'DS_CAPTION', cCaption);
-  putitem(vParams,'DS_TABELA', cTabMan);
+  putitem(vParams,'DS_CAPTION', _Caption);
+  putitem(vParams,'DS_TABELA', _TabMan);
   putitem(vParams,'DS_SQL', cSQL);
   putlistitensocc(vFiltro, _DataSet);
   TcMANUTENCAO.Execute(vParams, vFiltro);
@@ -149,13 +149,13 @@ begin
   if _DataSet.IsEmpty then
     raise Exception.Create(cMESSAGE_CONSULTAVAZIA);
 
-  if not dDADOS.f_VerPrivilegio(cTabMan,'IN_EXCLUIR') then
+  if not dDADOS.f_VerPrivilegio(_TabMan,'IN_EXCLUIR') then
     Exit;
 
   putitem(vParams,'IN_CONSULTA','TRUE');
   putitem(vParams,'IN_EXCLUIR','TRUE');
-  putitem(vParams,'DS_CAPTION',cCaption);
-  putitem(vParams,'DS_TABELA',cTabMan);
+  putitem(vParams,'DS_CAPTION',_Caption);
+  putitem(vParams,'DS_TABELA',_TabMan);
   putitem(vParams,'DS_SQL',cSQL);
   putlistitensocc(vFiltro,_DataSet);
   TcMANUTENCAO.Execute(vParams, vFiltro);
@@ -188,10 +188,10 @@ end;
 
 procedure TcCONSULTA.ToolButtonImprimirClick(Sender: TObject);
 begin
-  if not dDADOS.f_VerPrivilegio(cTabMan, 'IN_IMPRIMIR') then 
+  if not dDADOS.f_VerPrivilegio(_TabMan, 'IN_IMPRIMIR') then 
     Exit;
   
-  TcRELATORIO.Executar(_DataSet, cCaptionRel, f_ObterFiltroSQL, cSQL, nil);
+  TcRELATORIO.Executar(_DataSet, _CaptionRel, f_ObterFiltroSQL, cSQL, nil);
 end;
 
 //------------------------------------------------------------------------------
@@ -206,7 +206,8 @@ begin
   else if (Key = VK_F6) then ClickButton('ToolButtonImprimir')
   else if (Key = VK_F8) then ClickButton('ToolButtonExcluir')
   else if (Key = VK_F12) then begin
-    if (cKeyMan <> '') then Hint := item(cKeyMan, _DataSet);
+    if (_KeyMan <> '') then
+      Hint := item(_KeyMan, _DataSet);
     ModalResult := mrOk;
   end;
 end;

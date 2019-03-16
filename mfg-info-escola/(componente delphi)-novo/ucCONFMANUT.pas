@@ -4,7 +4,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, Buttons, ExtCtrls, ComCtrls, ToolWin, CheckLst;
+  Dialogs, StdCtrls, Buttons, ExtCtrls, ComCtrls, ToolWin, CheckLst,
+  ucCONFCAMPO, ucCONFCAMPOJSON;
 
 type
   TcCONFMANUT = class(TForm)
@@ -27,10 +28,24 @@ type
     procedure ToolButtonCancelClick(Sender: TObject);
     procedure ToolButtonSelClick(Sender: TObject);
   private
+    FCaption,
+    FTabMan,
+    FMetadata,
+    FLstCod : String;
+    FConfCampoList : TcCONFCAMPOLIST;
+    FTitulo: String;
+    procedure CarregarConfCampoList;
+    procedure SetCaption(const Value: String);
+    procedure SetTabMan(const Value: String);
+    procedure SetTitulo(const Value: String);
   protected
-    cCaption, cTabMan, cColMan, cMetadata : String;
-    FValues : TStringList;
+    function GetFlag(pConfCampo : TcCONFCAMPO) : Boolean; virtual;
+    procedure SetFlag(pConfCampo : TcCONFCAMPO; Value : Boolean); virtual;
   public
+    property _Titulo : String read FTitulo write SetTitulo;
+    property _Caption : String read FCaption write SetCaption;
+    property _TabMan : String read FTabMan write SetTabMan;
+
     class procedure Executar(pCaption, pTabMan : String);
   end;
 
@@ -42,12 +57,23 @@ uses
   ucCADASTROFUNC, ucFUNCAO, ucCONST, ucITEM, ucXML, ucDADOS, ucCAMPO,
   ucMETADATA;
 
+  function TcCONFMANUT.GetFlag(pConfCampo : TcCONFCAMPO) : Boolean;
+  begin
+    Result := pConfCampo.InManut;
+  end;
+
+  procedure TcCONFMANUT.SetFlag(pConfCampo : TcCONFCAMPO; Value : Boolean);
+  begin
+    pConfCampo.InManut := Value;
+  end;
+
 class procedure TcCONFMANUT.Executar(pCaption, pTabMan : String);
 begin
-  with TcCONFMANUT.Create(Application) do
+  Application.CreateForm(TComponentClass(Self), Self);
+  with TcCONFMANUT(Self) do
   try
-    cCaption := pCaption;
-    cTabMan := pTabMan;
+    _Caption := pCaption;
+    _TabMan := pTabMan;
     ShowModal;
   finally
     Free;
@@ -57,36 +83,24 @@ end;
 procedure TcCONFMANUT.FormCreate(Sender: TObject);
 begin
   TcCADASTROFUNC.CorrigeCarregaImagem(Self);
-  FValues := TStringList.Create;
 end;
 
 procedure TcCONFMANUT.FormShow(Sender: TObject);
 var
-  vLstCod, vCod, vDes : String;
+  vConfCampo : TcCONFCAMPO;
+  I : Integer;
 begin
-  cColMan := LerIni(cCaption, COL_MAN);
+  FItems.Items.Clear();
 
-  cMetadata := dDADOS.GetMetadataEnt(cTabMan);
-  cMetadata := itemX('fields', cMetadata);
-  vLstCod := TcMETADATA.getMetadataXml(cMetadata, 'cod');
+  for I := 0 to FConfCampoList.Count-1 do begin
+    vConfCampo := FConfCampoList.Item[I];
 
-  FValues.Text := '';
-  FItems.Items.Text := '';
-
-  while vLstCod <> '' do begin
-    vCod := getitem(vLstCod);
-    if vCod = '' then Break;
-    delitem(vLstCod);
-
-    if Pos(vCod, 'TP_SITUACAO') > 0 then
+    if Pos(vConfCampo.Codigo, 'TP_SITUACAO') > 0 then
       Continue;
 
-    vDes := CampoDes(vCod);
-
-    FValues.Add(vCod);
     with FItems, FItems.Items do begin
-      Add(vDes);
-      Checked[Count-1] := (Pos(vCod, cColMan) > 0) or (cColMan = '');
+      AddObject(vConfCampo.Descricao, vConfCampo);
+      Checked[Count-1] := GetFlag(vConfCampo);
     end;
   end;
 end;
@@ -100,7 +114,6 @@ end;
 
 procedure TcCONFMANUT.ToolButtonOkClick(Sender: TObject);
 var
-  vLstCod : String;
   I : Integer;
 begin
   if not Pergunta('Confirma gravação ?') then
@@ -108,10 +121,9 @@ begin
 
   with FItems, FItems.Items do
     for I:=0 to Count-1 do
-      if Checked[I] then
-        putitemD(vLstCod, FValues[I], '|');
+      SetFlag(TcCONFCAMPO(FItems.Items.Objects[I]), Checked[I]);
 
-  fGravaIni(cCaption, COL_MAN, vLstCod);
+  TcCONFCAMPOJSON.Gravar(_Caption, FConfCampoList);
 
   Mensagem('Gravação efetuado com sucesso');
 
@@ -130,6 +142,85 @@ begin
   with FItems do
     for I:=0 to Count-1 do
       Checked[I] := not Checked[I];
+end;
+
+procedure TcCONFMANUT.SetTitulo(const Value: String);
+begin
+  FTitulo := Value;
+  Caption := Value;
+  RxLabel3.Caption := Value;
+end;
+
+procedure TcCONFMANUT.SetCaption(const Value: String);
+begin
+  FCaption := Value;
+end;
+
+procedure TcCONFMANUT.SetTabMan(const Value: String);
+begin
+  FTabMan := Value;
+  FMetadata := dDADOS.GetMetadataEnt(_TabMan);
+  FMetadata := itemX('fields', FMetadata);
+  FLstCod := TcMETADATA.getMetadataXml(FMetadata, 'cod');
+  CarregarConfCampoList();
+end;
+
+procedure TcCONFMANUT.CarregarConfCampoList;
+var
+  vLstCod, vCod, vDes : String;
+  vInChave, vInValid, vInIncre : Boolean;
+  vConfCampo : TcCONFCAMPO;
+  I : Integer;
+begin
+  FConfCampoList := TcCONFCAMPOJSON.Ler(_Caption);
+
+  if (FConfCampoList.Count > 0) then
+    Exit;
+
+  vLstCod := FLstCod;
+  vInChave := True;
+
+  while (vLstCod <> '') do begin
+    vCod := getitem(vLstCod);
+    if (vCod = '') then Break;
+    delitem(vLstCod);
+
+    if (Pos(vCod, 'TP_SITUACAO') > 0) then begin
+      vInChave := False;
+      Continue;
+    end;
+
+    vDes := CampoDes(vCod);
+
+    with FConfCampoList.Adicionar do begin
+      Codigo := vCod;
+      Descricao := vDes;
+      InChave := vInChave;
+      InManut := True;
+      InRelat := True;
+      InVisib := True;
+      InIncre := False;
+      InValid := False;
+    end;
+  end;
+
+  vInIncre := True;
+  vInValid := True;
+
+  for I := 0 to FConfCampoList.Count - 1 do begin
+    vConfCampo := FConfCampoList.Item[I];
+
+    if (vConfCampo.InChave) then begin
+      if (FConfCampoList.GetListaChave().Count = 1) then begin
+        vConfCampo.InIncre := vInIncre;
+        vInIncre := False;
+      end;
+    end
+    else begin
+      vConfCampo.InValid := vInValid;
+      vInValid := False;
+    end;
+  end;
 end;
 
 end.

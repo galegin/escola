@@ -28,8 +28,8 @@ uses
 procedure TcPARAMETRO.FormCreate(Sender: TObject);
 begin
   inherited;
-  cTabMan := 'ADM_PARAM';
-  cKeyMan := 'CD_PARAMETRO';
+  _TabMan := 'ADM_PARAM';
+  _KeyMan := 'CD_PARAMETRO';
 end;
 
 procedure TcPARAMETRO.ToolButtonGravarClick(Sender: TObject);

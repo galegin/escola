@@ -450,7 +450,7 @@ begin
       Top := Screen.WorkAreaTop;
       Left := Screen.WorkAreaLeft;
       Height := Screen.WorkAreaHeight;
-      Width := Screen.WorkAreaWidth div 2;
+      Width := Screen.WorkAreaWidth; // div 2;
     end;
 end;
 

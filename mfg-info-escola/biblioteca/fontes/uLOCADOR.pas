@@ -43,9 +43,9 @@ procedure TfLOCADOR.FormCreate(Sender: TObject);
 begin
   inherited;
 
-  cTabMan := 'GER_LOCADOR';
-  cKeyMan := 'CD_LOCADOR';
-  cIncMan := 'CD_LOCADOR';
+  _TabMan := 'GER_LOCADOR';
+  _KeyMan := 'CD_LOCADOR';
+  _IncMan := 'CD_LOCADOR';
 
   fCD_CURSO.Tag := TAG_FK;
   fTP_ENSINO.Tag := TAG_FK;

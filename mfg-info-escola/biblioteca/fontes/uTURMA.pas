@@ -22,9 +22,9 @@ implementation
 procedure TfTURMA.FormCreate(Sender: TObject);
 begin
   inherited;
-  cTabMan := 'GER_TURMA';
-  cKeyMan := 'CD_TURMA';
-  cIncMan := 'CD_TURMA';
+  _TabMan := 'GER_TURMA';
+  _KeyMan := 'CD_TURMA';
+  _IncMan := 'CD_TURMA';
 end;
 
 initialization

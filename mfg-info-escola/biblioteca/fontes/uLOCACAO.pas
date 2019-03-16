@@ -76,14 +76,13 @@ begin
   inherited;
 
   cModoFormulario := mfConsulta;
-  cTabMan := 'GER_LOCACAO';
-  cKeyMan := 'CD_LOCACAO';
+  _TabMan := 'GER_LOCACAO';
+  _KeyMan := 'CD_LOCACAO';
 
   bCpoMan := False;
 
   vInConsulta := True;
 
-  //cSQL := 'select * from V_GER_LOCACAO ';
   cSQL :=
     'select a.CD_LOCACAO ' +
     ',      a.TP_SITUACAO ' +
@@ -118,12 +117,12 @@ begin
   TcStringList(fTP_LOCACAO.Items).p_AddLista(listDs(cMENU.f_VerCB('TP_LOCACAO')) + '|Todos');
   fTP_LOCACAO.ItemIndex := 0;
 
-  bImprimeRecibo.Checked := IfNullB(LerIni(cCaption, IMP_REC), True);
-  bInformaLivro.Checked := IfNullB(LerIni(cCaption, INF_LIV), True);
-  bIsentaMulta.Checked := IfNullB(LerIni(cCaption, ISE_MUL), False);
-  bIsentaMotivo.Checked := IfNullB(LerIni(cCaption, ISE_MOT), False);
+  bImprimeRecibo.Checked := IfNullB(LerIni(_Caption, IMP_REC), True);
+  bInformaLivro.Checked := IfNullB(LerIni(_Caption, INF_LIV), True);
+  bIsentaMulta.Checked := IfNullB(LerIni(_Caption, ISE_MUL), False);
+  bIsentaMotivo.Checked := IfNullB(LerIni(_Caption, ISE_MOT), False);
 
-  if IfNullB(LerIni(cCaption, CAD_DES), True) then begin
+  if IfNullB(LerIni(_Caption, CAD_DES), True) then begin
     p_SetarDescr(dfCD_LIVRO, cModoFormulario);
     p_SetarDescr(dfCD_LOCADOR, cModoFormulario);
     p_SetarDescr(dfCD_TURMA, cModoFormulario);
@@ -233,14 +232,14 @@ procedure TfLOCACAO.ToolButtonImprimirClick(Sender: TObject);
 var
   vVlMultaDia : Real;
 begin
-  cCaptionRel := cCaption;
+  _CaptionRel := _Caption;
 
   if fIN_ATRASADO.Checked then
-    cCaptionRel := cCaptionRel + ' - ATRASADO';
+    _CaptionRel := _CaptionRel + ' - ATRASADO';
   if fTP_AGRUPAR.ItemIndex = 0 then // Por Locador
-    cCaptionRel := cCaptionRel + ' / LOCADOR'
+    _CaptionRel := _CaptionRel + ' / LOCADOR'
   else if fTP_AGRUPAR.ItemIndex = 1 then // Por Livro
-    cCaptionRel := cCaptionRel + ' / LIVRO';
+    _CaptionRel := _CaptionRel + ' / LIVRO';
 
   vVlMultaDia := IfNullF(dDADOS.f_LerParametro('VL_MULTA_DIA'),0);
   if vVlMultaDia = 0 then
@@ -619,25 +618,25 @@ end;
 procedure TfLOCACAO.bImprimeReciboClick(Sender: TObject);
 begin
   bImprimeRecibo.Checked := not bImprimeRecibo.Checked;
-  fGravaIni(cCaption, IMP_REC, bImprimeRecibo.Checked);
+  fGravaIni(_Caption, IMP_REC, bImprimeRecibo.Checked);
 end;
 
 procedure TfLOCACAO.bInformaLivroClick(Sender: TObject);
 begin
   bInformaLivro.Checked := not bInformaLivro.Checked;
-  fGravaIni(cCaption, IMP_LIV, bInformaLivro.Checked);
+  fGravaIni(_Caption, IMP_LIV, bInformaLivro.Checked);
 end;
 
 procedure TfLOCACAO.bIsentaMultaClick(Sender: TObject);
 begin
   bIsentaMulta.Checked := not bIsentaMulta.Checked;
-  fGravaIni(cCaption, ISE_MUL, bIsentaMulta.Checked);
+  fGravaIni(_Caption, ISE_MUL, bIsentaMulta.Checked);
 end;
 
 procedure TfLOCACAO.bIsentaMotivoClick(Sender: TObject);
 begin
   bIsentaMotivo.Checked := not bIsentaMotivo.Checked;
-  fGravaIni(cCaption, ISE_MOT, bIsentaMotivo.Checked);
+  fGravaIni(_Caption, ISE_MOT, bIsentaMotivo.Checked);
 end;
 
 procedure TfLOCACAO._DataSetAfterOpen(DataSet: TDataSet);

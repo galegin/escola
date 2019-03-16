@@ -44,8 +44,8 @@ begin
   inherited;
 
   cModoFormulario := mfConsultaSomente;
-  cTabMan := 'GER_LIVRO';
-  cKeyMan := 'CD_LIVRO';
+  _TabMan := 'GER_LIVRO';
+  _KeyMan := 'CD_LIVRO';
 
   cSQL :=
     'select * from ( ' +

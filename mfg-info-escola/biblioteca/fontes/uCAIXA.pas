@@ -37,7 +37,7 @@ begin
   inherited;
   
   cModoFormulario := mfConsulta;
-  cTabMan := 'V_GER_CAIXA';
+  _TabMan := 'V_GER_CAIXA';
 
   cSQL := DS_SQL + DS_GRP;
 end;

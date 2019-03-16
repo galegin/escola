@@ -55,8 +55,8 @@ uses
 procedure TcUSUARIO.FormCreate(Sender: TObject);
 begin
   inherited;
-  cTabMan := 'ADM_USUARIO';
-  cKeyMan := 'CD_USUARIO';
+  _TabMan := 'ADM_USUARIO';
+  _KeyMan := 'CD_USUARIO';
 end;
 
 procedure TcUSUARIO.FormShow(Sender: TObject);

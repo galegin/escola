@@ -59,11 +59,11 @@ procedure TcMANUTENCAO.FormShow(Sender: TObject);
 var
   vSqlChave : String;
 begin
-  cCaption := item('DS_CAPTION', _Params);
-  cTabMan := item('DS_TABELA', _Params);
+  _Caption := item('DS_CAPTION', _Params);
+  _TabMan := item('DS_TABELA', _Params);
   cSQL := item('DS_SQL', _Params);
 
-  Caption := cCaption; // Incluindo / Alterando / Excluindo / Consultando
+  Caption := _Caption; // Incluindo / Alterando / Excluindo / Consultando
 
   p_LerIni;
   p_Consultar(cSQL,REG_LIMPO);
@@ -102,9 +102,9 @@ end;
 procedure TcMANUTENCAO.ToolButtonConfirmarClick(Sender: TObject);
 begin
   p_DesCarregarCampos;
-  dDADOS.p_IncrementoCodigo(_DataSet,cTabMan,cIncMan);
+  dDADOS.p_IncrementoCodigo(_DataSet, _TabMan, _IncMan);
   if not f_VerObrigatorio then Exit;
-  TcLOGALTERACAO.Gravar(_DataSet, cTabMan, cLogMan);
+  TcLOGALTERACAO.Gravar(_DataSet, _TabMan, cLogMan);
   _DataSet.Post;
   ModalResult := mrOk;
 end;
