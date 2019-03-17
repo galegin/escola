@@ -2,4 +2,7 @@
 /mfg-info-escola/inativo/log
 *.zip
 *.gbk
+*.dcu
+*.ddp
+*.dsk
 *.~m2
