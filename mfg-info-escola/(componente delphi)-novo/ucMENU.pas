@@ -398,7 +398,8 @@ begin
   dDADOS.gNmUsuario := vResult;
   dDADOS.gTpPrivilegio := '1';
   if (dDADOS.gNmUsuario <> 'SUPORTE') then begin
-    dDADOS.gTpPrivilegio := dDADOS.f_ConsultaStrSql('select TP_PRIVILEGIO from ADM_USUARIO where NM_LOGIN=''' + dDADOS.gNmUsuario + ''' ','TP_PRIVILEGIO');
+    dDADOS.gTpPrivilegio := dDADOS.f_ConsultaStrSql(
+      'select TP_PRIVILEGIO from ADM_USUARIO where NM_LOGIN=''' + dDADOS.gNmUsuario + ''' ', 'TP_PRIVILEGIO');
   end;
 
   bConfiguravel.Visible := (dDADOS.gNmUsuario = 'SUPORTE');

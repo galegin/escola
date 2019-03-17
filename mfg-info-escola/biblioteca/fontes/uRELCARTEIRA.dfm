@@ -49,6 +49,8 @@ inherited rRELCARTEIRA: TrRELCARTEIRA
         0.000000000000000000
         0.000000000000000000
         243.416666666666700000)
+      XLColumn = 0
+      FullJustify = False
     end
     object QRLabelEscola: TQRLabel
       Left = 96
@@ -65,6 +67,8 @@ inherited rRELCARTEIRA: TrRELCARTEIRA
         254.000000000000000000
         10.583333333333330000
         732.895833333333300000)
+      XLColumn = 0
+      FullJustify = False
       Alignment = taCenter
       AlignToBand = False
       AutoSize = False
@@ -97,6 +101,8 @@ inherited rRELCARTEIRA: TrRELCARTEIRA
         254.000000000000000000
         169.333333333333300000
         732.895833333333300000)
+      XLColumn = 0
+      FullJustify = False
       Alignment = taCenter
       AlignToBand = False
       AutoSize = False
@@ -129,6 +135,8 @@ inherited rRELCARTEIRA: TrRELCARTEIRA
         10.583333333333330000
         306.916666666666700000
         235.479166666666700000)
+      XLColumn = 0
+      FullJustify = False
       Alignment = taLeftJustify
       AlignToBand = False
       AutoSize = False
@@ -161,6 +169,8 @@ inherited rRELCARTEIRA: TrRELCARTEIRA
         254.000000000000000000
         306.916666666666700000
         732.895833333333300000)
+      XLColumn = 0
+      FullJustify = False
       Alignment = taLeftJustify
       AlignToBand = False
       AutoSize = False
@@ -194,6 +204,8 @@ inherited rRELCARTEIRA: TrRELCARTEIRA
         10.583333333333330000
         433.916666666666700000
         235.479166666666700000)
+      XLColumn = 0
+      FullJustify = False
       Alignment = taLeftJustify
       AlignToBand = False
       AutoSize = False
@@ -226,6 +238,8 @@ inherited rRELCARTEIRA: TrRELCARTEIRA
         10.583333333333330000
         497.416666666666700000
         235.479166666666700000)
+      XLColumn = 0
+      FullJustify = False
       Alignment = taLeftJustify
       AlignToBand = False
       AutoSize = False
@@ -258,6 +272,8 @@ inherited rRELCARTEIRA: TrRELCARTEIRA
         254.000000000000000000
         433.916666666666700000
         732.895833333333300000)
+      XLColumn = 0
+      FullJustify = False
       Alignment = taLeftJustify
       AlignToBand = False
       AutoSize = False
@@ -291,6 +307,8 @@ inherited rRELCARTEIRA: TrRELCARTEIRA
         254.000000000000000000
         497.416666666666700000
         732.895833333333300000)
+      XLColumn = 0
+      FullJustify = False
       Alignment = taLeftJustify
       AlignToBand = False
       AutoSize = False

@@ -28,20 +28,12 @@ const
   CTR_MAN = 'CtrMan'; //Tela centralizada
   DPL_MAN = 'DblMan'; //Duplo click F12
 
-  INC_MAN = 'IncMan'; //Campo incremento
-  COL_MAN = 'ColMan'; //Campos de manutencao visiveis
-  DES_MAN = 'DesMan'; //Descricao dos campos
-  KEY_MAN = 'KeyMan'; //Campos chave
   STP_MAN = 'StpMan'; //TabStop dos campos
   REA_MAN = 'ReaMan'; //Somente leitura dos campos
-  TAM_MAN = 'TamMan'; //Tamanho dos campos
-  DEC_MAN = 'DecMan'; //Decimais dos campos
   LAR_MAN = 'LarMan'; //Largura tela
   ALT_MAN = 'AltMan'; //Altura tela
-  TAB_MAN = 'TabMan'; //Nome da tabela
   MOD_MAN = 'ModMan'; //Modo tela (consulta/manutencao/...)
   ATA_MAN = 'AtaMan'; //Atalho tela
-  VAL_MAN = 'ValMan'; //Valida manutencao
   RED_MAN = 'RedMan'; //Manutencao reduzida
   CAD_DES = 'CadDes'; //Cadastra descricao campo chave estrangeira
 

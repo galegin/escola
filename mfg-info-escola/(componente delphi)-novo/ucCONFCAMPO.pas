@@ -62,13 +62,19 @@ type
   private
     function GetItem(Index: Integer): TcCONFCAMPO;
     procedure SetItem(Index: Integer; const Value: TcCONFCAMPO);
+    function GetColMan: String;
+    function GetIncMan: String;
+    function GetKeyMan: String;
+    function GetValMan: String;
+    function GetTamMan: String;
+    function GetTamRel: String;
   public
     function Adicionar : TcCONFCAMPO; overload;
     procedure Adicionar(item : TcCONFCAMPO); overload;
     property Item[Index: Integer] : TcCONFCAMPO read GetItem write SetItem;
     function Buscar(pCodigo : String) : TcCONFCAMPO;
-    function IsContemChave() : Boolean;
     function GetListaChave() : TcCONFCAMPOLIST;
+    function IsContemChave() : Boolean;
     function GetPrimeiraChave() : TcCONFCAMPO;
     function IsContemObrig() : Boolean;
     function GetListaObrig() : TcCONFCAMPOLIST;
@@ -88,9 +94,19 @@ type
     function IsContemVisib() : Boolean;
     function GetListaVisib() : TcCONFCAMPOLIST;
     function GetPrimeiraVisib() : TcCONFCAMPO;
+  published
+    property _ColMan : String read GetColMan;
+    property _IncMan : String read GetIncMan;
+    property _KeyMan : String read GetKeyMan;
+    property _ValMan : String read GetValMan;
+    property _TamMan : String read GetTamMan;
+    property _TamRel : String read GetTamRel;
   end;
 
 implementation
+
+uses
+  ucITEM;
 
 { TcCONFCAMPO }
 
@@ -205,17 +221,8 @@ end;
 //--
 
 function TcCONFCAMPOLIST.IsContemChave: Boolean;
-var
-  I : Integer;
 begin
-  Result := False;
-
-  for I := 0 to Count - 1 do begin
-    if (Item[I].InChave) then begin
-      Result := True;
-      Exit;
-    end;
-  end;
+  Result := GetListaChave().Count > 0;
 end;
 
 function TcCONFCAMPOLIST.GetListaChave: TcCONFCAMPOLIST;
@@ -243,17 +250,8 @@ end;
 //--
 
 function TcCONFCAMPOLIST.IsContemObrig: Boolean;
-var
-  I : Integer;
 begin
-  Result := False;
-
-  for I := 0 to Count - 1 do begin
-    if (Item[I].InObrig) then begin
-      Result := True;
-      Exit;
-    end;
-  end;
+  Result := GetListaObrig().Count > 0;
 end;
 
 function TcCONFCAMPOLIST.GetListaObrig: TcCONFCAMPOLIST;
@@ -281,17 +279,8 @@ end;
 //--
 
 function TcCONFCAMPOLIST.IsContemIncre: Boolean;
-var
-  I : Integer;
 begin
-  Result := False;
-
-  for I := 0 to Count - 1 do begin
-    if (Item[I].InIncre) then begin
-      Result := True;
-      Exit;
-    end;
-  end;
+  Result := GetListaIncre().Count > 0;
 end;
 
 function TcCONFCAMPOLIST.GetListaIncre: TcCONFCAMPOLIST;
@@ -319,17 +308,8 @@ end;
 //--
 
 function TcCONFCAMPOLIST.IsContemValid: Boolean;
-var
-  I : Integer;
 begin
-  Result := False;
-
-  for I := 0 to Count - 1 do begin
-    if (Item[I].InValid) then begin
-      Result := True;
-      Exit;
-    end;
-  end;
+  Result := GetListaValid().Count > 0;
 end;
 
 function TcCONFCAMPOLIST.GetListaValid: TcCONFCAMPOLIST;
@@ -357,17 +337,8 @@ end;
 //--
 
 function TcCONFCAMPOLIST.IsContemManut: Boolean;
-var
-  I : Integer;
 begin
-  Result := False;
-
-  for I := 0 to Count - 1 do begin
-    if (Item[I].InManut) then begin
-      Result := True;
-      Exit;
-    end;
-  end;
+  Result := GetListaManut().Count > 0;
 end;
 
 function TcCONFCAMPOLIST.GetListaManut: TcCONFCAMPOLIST;
@@ -395,17 +366,8 @@ end;
 //--
 
 function TcCONFCAMPOLIST.IsContemRelat: Boolean;
-var
-  I : Integer;
 begin
-  Result := False;
-
-  for I := 0 to Count - 1 do begin
-    if (Item[I].InRelat) then begin
-      Result := True;
-      Exit;
-    end;
-  end;
+  Result := GetListaRelat().Count > 0;
 end;
 
 function TcCONFCAMPOLIST.GetListaRelat: TcCONFCAMPOLIST;
@@ -433,17 +395,8 @@ end;
 //--
 
 function TcCONFCAMPOLIST.IsContemVisib: Boolean;
-var
-  I : Integer;
 begin
-  Result := False;
-
-  for I := 0 to Count - 1 do begin
-    if (Item[I].InVisib) then begin
-      Result := True;
-      Exit;
-    end;
-  end;
+  Result := GetListaVisib().Count > 0;
 end;
 
 function TcCONFCAMPOLIST.GetListaVisib: TcCONFCAMPOLIST;
@@ -469,5 +422,64 @@ begin
 end;
 
 //--
+
+function TcCONFCAMPOLIST.GetColMan: String;
+var
+  vConfCampoChaveList : TcCONFCAMPOLIST;
+  I : Integer;
+begin
+  vConfCampoChaveList := GetListaManut();
+  for I := 0 to vConfCampoChaveList.Count - 1 do
+    putitem(Result, vConfCampoChaveList.Item[I].Codigo);
+end;
+
+function TcCONFCAMPOLIST.GetIncMan: String;
+var
+  vConfCampoIncre : TcCONFCAMPO;
+begin
+  vConfCampoIncre := GetPrimeiraIncre();
+  Result := IfThen(vConfCampoIncre <> nil, vConfCampoIncre.Codigo);
+end;
+
+function TcCONFCAMPOLIST.GetKeyMan: String;
+var
+  vConfCampoChaveList : TcCONFCAMPOLIST;
+  I : Integer;
+begin
+  Result := '';
+  vConfCampoChaveList := GetListaChave();
+  for I := 0 to vConfCampoChaveList.Count - 1 do
+    putitem(Result, vConfCampoChaveList.Item[I].Codigo);
+end;
+
+function TcCONFCAMPOLIST.GetValMan: String;
+var
+  vConfCampoValid : TcCONFCAMPO;
+begin
+  vConfCampoValid := GetPrimeiraValid();
+  Result := IfThen(vConfCampoValid <> nil, vConfCampoValid.Codigo);
+end;
+
+function TcCONFCAMPOLIST.GetTamMan: String;
+var
+  vConfCampoChaveList : TcCONFCAMPOLIST;
+  I : Integer;
+begin
+  Result := '';
+  vConfCampoChaveList := GetListaManut();
+  for I := 0 to vConfCampoChaveList.Count - 1 do
+    putitem(Result, vConfCampoChaveList.Item[I].Codigo, vConfCampoChaveList.Item[I].Tamanho);
+end;
+
+function TcCONFCAMPOLIST.GetTamRel: String;
+var
+  vConfCampoChaveList : TcCONFCAMPOLIST;
+  I : Integer;
+begin
+  Result := '';
+  vConfCampoChaveList := GetListaRelat();
+  for I := 0 to vConfCampoChaveList.Count - 1 do
+    putitem(Result, vConfCampoChaveList.Item[I].Codigo, vConfCampoChaveList.Item[I].TamanhoRel);
+end;
 
 end.

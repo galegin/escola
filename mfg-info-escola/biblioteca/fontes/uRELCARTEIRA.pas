@@ -30,13 +30,19 @@ implementation
 
 {$R *.dfm}
 
+uses
+  ucDADOS;
+
 { TrRELCARTEIRA }
 
 constructor TrRELCARTEIRA.create(Aowner: TComponent);
 begin
   inherited;
+
   if FileExists('Logotipo.bmp') then
     QRImageLogo.Picture.LoadFromFile('Logotipo.bmp');
+
+  QRLabelEscola.Caption := dDADOS.f_LerParametro('NM_ESCOLA');
 end;
 
 end.

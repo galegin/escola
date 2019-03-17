@@ -29,11 +29,9 @@ type
     procedure ToolButtonSelClick(Sender: TObject);
   private
     FCaption,
-    FTabMan,
-    FMetadata,
-    FLstCod : String;
+    FTabMan : String;
     FConfCampoList : TcCONFCAMPOLIST;
-    FTitulo: String;
+    FTitulo : String;
     procedure CarregarConfCampoList;
     procedure SetCaption(const Value: String);
     procedure SetTabMan(const Value: String);
@@ -55,7 +53,7 @@ implementation
 
 uses
   ucCADASTROFUNC, ucFUNCAO, ucCONST, ucITEM, ucXML, ucDADOS, ucCAMPO,
-  ucMETADATA;
+  ucMETADATA, ucCONFCAMPOMET;
 
   function TcCONFMANUT.GetFlag(pConfCampo : TcCONFCAMPO) : Boolean;
   begin
@@ -140,7 +138,7 @@ var
   I : Integer;
 begin
   with FItems do
-    for I:=0 to Count-1 do
+    for I := 0 to Count-1 do
       Checked[I] := not Checked[I];
 end;
 
@@ -154,73 +152,19 @@ end;
 procedure TcCONFMANUT.SetCaption(const Value: String);
 begin
   FCaption := Value;
+  CarregarConfCampoList();
 end;
 
 procedure TcCONFMANUT.SetTabMan(const Value: String);
 begin
   FTabMan := Value;
-  FMetadata := dDADOS.GetMetadataEnt(_TabMan);
-  FMetadata := itemX('fields', FMetadata);
-  FLstCod := TcMETADATA.getMetadataXml(FMetadata, 'cod');
   CarregarConfCampoList();
 end;
 
 procedure TcCONFMANUT.CarregarConfCampoList;
-var
-  vLstCod, vCod, vDes : String;
-  vInChave, vInValid, vInIncre : Boolean;
-  vConfCampo : TcCONFCAMPO;
-  I : Integer;
 begin
-  FConfCampoList := TcCONFCAMPOJSON.Ler(_Caption);
-
-  if (FConfCampoList.Count > 0) then
-    Exit;
-
-  vLstCod := FLstCod;
-  vInChave := True;
-
-  while (vLstCod <> '') do begin
-    vCod := getitem(vLstCod);
-    if (vCod = '') then Break;
-    delitem(vLstCod);
-
-    if (Pos(vCod, 'TP_SITUACAO') > 0) then begin
-      vInChave := False;
-      Continue;
-    end;
-
-    vDes := CampoDes(vCod);
-
-    with FConfCampoList.Adicionar do begin
-      Codigo := vCod;
-      Descricao := vDes;
-      InChave := vInChave;
-      InManut := True;
-      InRelat := True;
-      InVisib := True;
-      InIncre := False;
-      InValid := False;
-    end;
-  end;
-
-  vInIncre := True;
-  vInValid := True;
-
-  for I := 0 to FConfCampoList.Count - 1 do begin
-    vConfCampo := FConfCampoList.Item[I];
-
-    if (vConfCampo.InChave) then begin
-      if (FConfCampoList.GetListaChave().Count = 1) then begin
-        vConfCampo.InIncre := vInIncre;
-        vInIncre := False;
-      end;
-    end
-    else begin
-      vConfCampo.InValid := vInValid;
-      vInValid := False;
-    end;
-  end;
+  if (FCaption <> '') and (FTabMan <> '') then
+    FConfCampoList := TcCONFCAMPOMET.Carregar(_Caption, _TabMan);
 end;
 
 end.

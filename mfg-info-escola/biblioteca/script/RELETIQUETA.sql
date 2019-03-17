@@ -1,0 +1,1 @@
+select liv.CD_LIVRO || ' - ' || liv.DS_TITULO as DS_TITULO ,      edi.DS_EDITORA ,      liv.DS_AUTOR ,      liv.NR_ANO from (select * from GER_LIVRO where TP_SITUACAO = 1 /*WHERE*/ ) liv left outer join GER_EDITORA edi on (edi.CD_EDITORA = liv.CD_EDITORA)) where liv.CD_LIVRO = '1'

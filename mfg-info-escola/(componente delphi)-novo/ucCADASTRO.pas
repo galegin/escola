@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ComCtrls, ToolWin, Grids, DBGrids, Buttons, StdCtrls, ExtCtrls,
   DB, DBClient, ImgList, Provider, DBTables, Mask, StrUtils, DBCtrls, TeeProcs,
-  TeEngine, Chart, MidasLib, FMTBcd, SqlExpr, Menus, dbcgrids, ucFORM,
+  TeEngine, Chart, MidasLib, FMTBcd, SqlExpr, Menus, dbcgrids, Math, ucFORM,
   ucCONFIMPRESSAO, ucTIPOIMPRESSAO, ucCONFCAMPO;
 
 type
@@ -230,6 +230,9 @@ end;
 
 procedure TcCADASTRO.ToolButtonNovoClick(Sender: TObject);
 begin
+  if (cModoFormulario in [mfAlteracaoSomente]) then
+    Exit;
+
   if not dDADOS.f_VerPrivilegio(_TabMan,'IN_INCLUIR') then
     Exit;
 
@@ -556,7 +559,7 @@ end;
 
 procedure TcCADASTRO.DataSource1StateChange(Sender: TObject);
 begin
-  if (cModoFormulario <> mfConsultaManutencao) then
+  if not (cModoFormulario in [mfConsultaManutencao, mfAlteracaoSomente]) then
     Exit;
 
   if _DataSet.Active then
@@ -584,41 +587,55 @@ begin
 end;
 
 procedure TcCADASTRO.p_HabilitaModoFormulario;
+
+  procedure pi_HabiltarModoFormularia(
+    pToolButton : TToolButton;
+    pVisible : Boolean;
+    pHabilita : Boolean);
+  begin
+    with pToolButton do begin
+      Tag := IfThen(pHabilita, BTN_HABILITA, BTN_NAO_HABILITA);
+      Visible := pHabilita and pVisible;
+    end;
+  end;
+
 begin
-  if (cModoFormulario in [mfConsulta, mfConsultaSomente]) then begin
-    ToolButtonNovo.Visible := False;
-    ToolButtonAlterar.Visible := False;
-    ToolButtonExcluir.Visible := False;
-    ToolButtonGravar.Visible := False;
-    ToolButtonCancelar.Visible := False;
-    ToolButtonImprimir.Visible := False;
-    ToolButtonExtrair.Visible := False;
-    if (cModoFormulario = mfConsultaSomente) then
-      TabSheet2.TabVisible := False
-    else
-      Panel3.Enabled := False;
-  end;
-  if (cModoFormulario = mfManutencao) then begin
-    ToolButtonNovo.Visible := False;
-    ToolButtonAlterar.Visible := False;
-    ToolButtonExcluir.Visible := False;
-    TabSheet1.TabVisible := False
-  end;
+  pi_HabiltarModoFormularia(ToolButtonFechar, True, True);
+
+  pi_HabiltarModoFormularia(ToolButtonLimpar, True, True);
+  pi_HabiltarModoFormularia(ToolButtonConsultar, True, True);
+  pi_HabiltarModoFormularia(ToolButtonImprimir, True, (cModoFormulario in [mfConsultaManutencao, mfManutencao]));
+  pi_HabiltarModoFormularia(ToolButtonExtrair, True, (cModoFormulario in [mfConsultaManutencao, mfManutencao]));
+
+  pi_HabiltarModoFormularia(ToolButtonNovo, True, (cModoFormulario in [mfConsultaManutencao, mfManutencao]));
+  pi_HabiltarModoFormularia(ToolButtonAlterar, True, (cModoFormulario in [mfConsultaManutencao, mfManutencao, mfAlteracaoSomente]));
+  pi_HabiltarModoFormularia(ToolButtonExcluir, True, (cModoFormulario in [mfConsultaManutencao, mfManutencao]));
+  pi_HabiltarModoFormularia(ToolButtonGravar, False, (cModoFormulario in [mfConsultaManutencao, mfManutencao, mfAlteracaoSomente]));
+  pi_HabiltarModoFormularia(ToolButtonCancelar, False, (cModoFormulario in [mfConsultaManutencao, mfManutencao, mfAlteracaoSomente]));
 end;
 
 procedure TcCADASTRO.p_HabilitaBotao(Habilita : Boolean);
-begin
-  ToolButtonConsultar.Visible := Habilita;
-  ToolButtonLimpar.Visible := Habilita;
 
-  ToolButtonNovo.Visible := Habilita;
-  ToolButtonAlterar.Visible := Habilita;
-  ToolButtonExcluir.Visible := Habilita;
-  ToolButtonGravar.Visible := not Habilita;
-  ToolButtonCancelar.Visible := not Habilita;
-  ToolButtonImprimir.Visible := Habilita;
-  ToolButtonExtrair.Visible := Habilita;
-  ToolButtonFechar.Visible := Habilita;
+  procedure pi_HabiltarBotao(pToolButton : TToolButton; pHabilita : Boolean);
+  begin
+    with pToolButton do
+      if (Tag = BTN_HABILITA) then
+        Visible := pHabilita;
+  end;
+
+begin
+  pi_HabiltarBotao(ToolButtonFechar, Habilita);
+
+  pi_HabiltarBotao(ToolButtonConsultar, Habilita);
+  pi_HabiltarBotao(ToolButtonLimpar, Habilita);
+  pi_HabiltarBotao(ToolButtonImprimir, Habilita);
+  pi_HabiltarBotao(ToolButtonExtrair, Habilita);
+
+  pi_HabiltarBotao(ToolButtonNovo, Habilita);
+  pi_HabiltarBotao(ToolButtonAlterar, Habilita);
+  pi_HabiltarBotao(ToolButtonExcluir, Habilita);
+  pi_HabiltarBotao(ToolButtonGravar, not Habilita);
+  pi_HabiltarBotao(ToolButtonCancelar, not Habilita);
 
   Panel4.Enabled := Habilita;
 end;

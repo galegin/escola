@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, FMTBcd, DB, DBClient, Provider, SqlExpr, DBGrids, Grids, ToolWin,
   ComCtrls, StdCtrls, ExtCtrls, StrUtils, DBCtrls, ucCOMP, Menus, TypInfo, Math,
-  ucCOMPPESQ, ucCONFCAMPO, ucCONFCAMPOJSON;
+  ucCOMPPESQ, ucCONFCAMPO, ucCONFCAMPOJSON, ucCONFCAMPOMET;
 
 const
   TAG_OCULTO   = -1;
@@ -16,6 +16,9 @@ const
   TAG_READONLY =  3;
   TAG_PFK      =  4;
   TAG_LK       =  5; // LookUp
+
+  BTN_HABILITA     = 1;
+  BTN_NAO_HABILITA = 0;
 
   REG_LIMPO    = 00;
   REG_TOTAL    = 30;
@@ -29,7 +32,8 @@ const
   larLabel     = 100;
 
 type
-  TModoFormulario = (mfConsultaSomente, mfConsulta, mfConsultaManutencao, mfManutencao);
+  TModoFormulario = (mfConsultaSomente, mfConsulta, mfConsultaManutencao,
+    mfManutencao, mfAlteracaoSomente);
 
   TTipoClasseForm = (tcfCadastro, tcfConsulta, tcfManutencao);
 
@@ -133,10 +137,10 @@ type
     procedure ToolButtonClick(Sender: TObject);
     procedure bConsultaLogClick(Sender: TObject);
     procedure bObservacaoClick(Sender: TObject);
+    procedure bConfigurarIncrementoClick(Sender: TObject);
     procedure bConfigurarManutencaoClick(Sender: TObject);
     procedure bConfigurarRelatorioClick(Sender: TObject);
     procedure bConfigurarValidacaoClick(Sender: TObject);
-    procedure bConfigurarIncrementoClick(Sender: TObject);
     procedure bMoverCampoClick(Sender: TObject);
     procedure bAjustarCampoClick(Sender: TObject);
   private
@@ -158,6 +162,7 @@ type
     procedure SetCaption(const Value: String);
     procedure SetCaptionRel(const Value: String);
     function GetColMan: String;
+    procedure SetTabMan(const Value: String);
   protected
     FConfCampoList : TcCONFCAMPOLIST;
     function ClickButton(pName : String) : Boolean;
@@ -181,14 +186,7 @@ type
 
     cSql,              // Comando sql
 
-    //cColMan,           // Colunas
-    //cTamMan,           // Tamanho colunas
-    //cDecMan,           // Decimais colunas
-    //cIncMan,           // Campo incremento
-    //cKeyMan,           // Chave primaria
-    //cTabMan,           // Nome tabela banco dados
-    //cAtaMan,           // Atalho de tela
-    //cValMan,           // Valida descricao manutencao ja existe
+    cAtaMan,           // Atalho de tela
 
     cNomTab,           // Nome tabela filha
     cAltTab,           // Altura tabela filha
@@ -196,9 +194,6 @@ type
 
     cDesCns,           // Descricao consulta
     cOrdCns : String;  // Ordenacao consulta
-
-    //cCaption,
-    //cCaptionRel : String;
 
     iTop,
     iLeft,
@@ -215,7 +210,7 @@ type
     property _Caption : String read FCaption write SetCaption;
     property _CaptionRel : String read FCaptionRel write SetCaptionRel;
 
-    property _TabMan : String read GetTabMan write FTabMan;
+    property _TabMan : String read GetTabMan write SetTabMan;
     property _KeyMan : String read GetKeyMan write FKeyMan;
     property _IncMan : String read GetIncMan write FIncMan;
     property _ValMan : String read GetValMan write FValMan;
@@ -248,25 +243,9 @@ uses
     iAltura := IfNullI(LerIni(_Caption, ALT_MAN), 0);
     iLargura := IfNullI(LerIni(_Caption, LAR_MAN), 0);
 
-    //cAtaMan := IfNullS(LerIni(_Caption, ATA_MAN), cAtaMan);
-    //cColMan := IfNullS(LerIni(_Caption, COL_MAN), cColMan);
-    //cTamMan := IfNullS(LerIni(_Caption, TAM_MAN), cTamMan);
-    //cDecMan := IfNullS(LerIni(_Caption, DEC_MAN), cDecMan);
-    //cIncMan := getitem(IfNullS(LerIni(_Caption, INC_MAN), cIncMan));
-    //cKeyMan := getitem(IfNullS(LerIni(_Caption, KEY_MAN), cKeyMan));
-    //cValMan := getitem(IfNullS(LerIni(_Caption, VAL_MAN), cValMan));
-
-    //cDesCns := LerIni(_Caption, DES_CNS);
-    //cOrdCns := LerIni(_Caption, ORD_CNS);
+    cAtaMan := IfNullS(LerIni(_Caption, ATA_MAN), cAtaMan);
 
     bAjustarCampo.Checked := IfNullB(LerIni(_Caption, RED_MAN), False);
-
-    CarregarConfCampoList();
-  end;
-
-  procedure TcFORM.CarregarConfCampoList;
-  begin
-    FConfCampoList := TcCONFCAMPOJSON.Ler(_Caption);
   end;
 
   function TcFORM.ClickButton(pName : String) : Boolean;
@@ -750,13 +729,19 @@ var
   vEditKey, vEditVal : TEdit;
   vResult, vSql : String;
 begin
+  if cModoFormulario in [mfConsulta, mfConsultaSomente] then
+    Exit;
+
+  if (_KeyMan = '') or (_ValMan = '') then
+    Exit;
+
   vEditVal := TEdit(Sender);
   vEditKey := TEdit(FindComponent(_KeyMan));
 
   vSql :=
     'select * from ' + _TabMan + ' ' +
     'where ' + _ValMan + '=''' + vEditVal.Text + ''' ' +
-    'and ' + _KeyMan + '<>' + vEditKey.Text + ' ' ;
+    'and ' + _KeyMan + '<>''' + vEditKey.Text + ''' ' ;
 
   vResult := dDADOS.f_ConsultaStrSql(vSql, '*');
   if item(_KeyMan, vResult) = '' then
@@ -1272,7 +1257,9 @@ procedure TcFORM.DBGrid1DblClick(Sender: TObject);
 var
   Component : TComponent;
 begin
-  if (cModoFormulario = mfConsulta) then Exit;
+  if (cModoFormulario = mfConsulta) then
+    Exit;
+    
   if (bDplMan) then begin
     if (_KeyMan <> '') then
       Hint := item(_KeyMan, _DataSet);
@@ -1402,6 +1389,8 @@ var
   I, J, T, vLargura : Integer;
   vStringGrid : TStringGrid;
   vLabel : TLabel;
+  vNomTab : String;
+  vConfCampoList : TcCONFCAMPOLIST;
 begin
   cNomTab := LerIni(_Caption, NOM_TAB);
   cAltTab := LerIni(_Caption, ALT_TAB);
@@ -1410,11 +1399,13 @@ begin
   if (cNomTab <> '') then begin
     T := itemcount(cNomTab);
     for I := 1 to T do begin
-      putitemX(cTB, getitem(cNomTab, I),
-               'DS_TABELA=' + getitem(cNomTab, I) + ';' +
-               'DS_CAMPO=' + LerIni(getitem(cNomTab, I), COL_MAN) + ';' +
-               'DS_TAM=' + LerIni(getitem(cNomTab, I), TAM_MAN) + ';' +
-               'DS_CHAVE=' + LerIni(getitem(cNomTab, I), KEY_MAN) + ';' +
+      vNomTab := getitem(cNomTab, I);
+      vConfCampoList := TcCONFCAMPOMET.CarregarTabMan(vNomTab);
+      putitemX(cTB, vNomTab,
+               'DS_TABELA=' + vNomTab + ';' +
+               'DS_CAMPO=' + vConfCampoList._ColMan + ';' +
+               'DS_TAM=' + vConfCampoList._TamMan + ';' +
+               'DS_CHAVE=' + vConfCampoList._KeyMan + ';' +
                'NR_ALTURA=' + getitem(cAltTab, I) + ';' +
                'NR_LARGURA=' + getitem(cLarTab, I));
     end;
@@ -1469,7 +1460,7 @@ var
 begin
   vTB := vStringGrid.Hint;
 
-  vTabela := IfNullS(LerIni('GER_' + item('DS_TABELA', vTB), TAB_MAN), item('DS_TABELA', vTB));
+  vTabela := item('DS_TABELA', vTB);
   vCampo := item('DS_CAMPO', vTB);
   vChave := item('DS_CHAVE', vTB);
 
@@ -1560,7 +1551,7 @@ begin
   with TStringGrid(Sender) do begin
     if (Hint = '') then Exit;
 
-    vCampo := getitem(LerIni(item('DS_TABELA', Hint), KEY_MAN), 1);
+    vCampo := getitem(item('DS_CHAVE', Hint), 1);
     if (vCampo = '') then Exit;
 
     cMENU.AbreTela(vCampo);
@@ -1577,10 +1568,9 @@ end;
 //--
 
 procedure TcFORM.p_CriarAtalho;
-//var
-//  T, I : Integer;
+var
+  T, I : Integer;
 begin
-  (*
   _CoolBarAtalho.Visible := (cAtaMan <> '');
 
   if (cAtaMan = '') then
@@ -1598,17 +1588,19 @@ begin
       OnClick := ToolButtonClick;
     end;
   end;
-  *)
 end;
 
 procedure TcFORM.ToolButtonClick(Sender: TObject);
 var
-  vCampo : String;
+  vConfCampoList : TcCONFCAMPOLIST;
+  vCaption, vCampo : String;
 begin
   if (TToolButton(Sender).Hint = '') then
     Exit;
 
-  vCampo := getitem(LerIni(TToolButton(Sender).Hint, KEY_MAN), 1);
+  vCaption := TToolButton(Sender).Hint;
+  vConfCampoList := TcCONFCAMPOMET.CarregarCaption(vCaption);
+  vCampo := getitem(vConfCampoList._KeyMan, 1);
   if (vCampo = '') then Exit;
 
   cMENU.AbreTela(vCampo, '');
@@ -1625,6 +1617,12 @@ begin
     raise Exception.Create(cMESSAGE_CONSULTAVAZIA);
 
   TcOBS.Editar(_DataSet, _TabMan);
+end;
+
+procedure TcFORM.bConfigurarIncrementoClick(Sender: TObject);
+begin
+  TcCONFINCRE.Executar(_Caption, _TabMan);
+  CarregarConfCampoList;
 end;
 
 procedure TcFORM.bConfigurarManutencaoClick(Sender: TObject);
@@ -1645,12 +1643,6 @@ begin
   CarregarConfCampoList;
 end;
 
-procedure TcFORM.bConfigurarIncrementoClick(Sender: TObject);
-begin
-  TcCONFINCRE.Executar(_Caption, _TabMan);
-  CarregarConfCampoList;
-end;
-
 procedure TcFORM.bMoverCampoClick(Sender: TObject);
 begin
   bMoverCampo.Checked := not bMoverCampo.Checked;
@@ -1665,11 +1657,18 @@ end;
 
 //--
 
+procedure TcFORM.CarregarConfCampoList;
+begin
+  if (FCaption <> '') and (FTabMan <> '') then
+    FConfCampoList := TcCONFCAMPOMET.Carregar(FCaption, FTabMan);
+end;
+
+//--
+
 procedure TcFORM.SetCaption(const Value: String);
 begin
   FCaption := Value;
-
-  p_LerIni;
+  CarregarConfCampoList();
 end;
 
 procedure TcFORM.SetCaptionRel(const Value: String);
@@ -1684,56 +1683,42 @@ begin
   Result := FTabMan;
 end;
 
+procedure TcFORM.SetTabMan(const Value: String);
+begin
+  FTabMan := Value;
+  CarregarConfCampoList();
+end;
+
 function TcFORM.GetKeyMan: String;
-var
-  vConfCampoChaveList : TcCONFCAMPOLIST;
-  I : Integer;
 begin
   Result := FKeyMan;
-
-  if (Result = '') then begin
-    vConfCampoChaveList := FConfCampoList.GetListaChave();
-    for I := 0 to vConfCampoChaveList.Count - 1 do
-      putitem(Result, vConfCampoChaveList.Item[I].Codigo);
-  end;
+  
+  if (Result = '') then
+    Result := FConfCampoList._KeyMan;
 end;
 
 function TcFORM.GetIncMan: String;
-var
-  vConfCampoIncre : TcCONFCAMPO;
 begin
   Result := FIncMan;
 
-  if (Result = '') then begin
-    vConfCampoIncre := FConfCampoList.GetPrimeiraIncre();
-    Result := IfThen(vConfCampoIncre <> nil, vConfCampoIncre.Codigo);
-  end;
+  if (Result = '') then
+    Result := FConfCampoList._IncMan;
 end;
 
 function TcFORM.GetValMan: String;
-var
-  vConfCampoValid : TcCONFCAMPO;
 begin
   Result := FIncMan;
 
-  if (Result = '') then begin
-    vConfCampoValid := FConfCampoList.GetPrimeiraValid();
-    Result := IfThen(vConfCampoValid <> nil, vConfCampoValid.Codigo);
-  end;
+  if (Result = '') then
+    Result := FConfCampoList._ValMan;
 end;
 
 function TcFORM.GetColMan: String;
-var
-  vConfCampoChaveList : TcCONFCAMPOLIST;
-  I : Integer;
 begin
   Result := FColMan;
 
-  if (Result = '') then begin
-    vConfCampoChaveList := FConfCampoList.GetListaManut();
-    for I := 0 to vConfCampoChaveList.Count - 1 do
-      putitem(Result, vConfCampoChaveList.Item[I].Codigo);
-  end;                                         
+  if (Result = '') then
+    Result := FConfCampoList._ColMan;
 end;
 
 end.

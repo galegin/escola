@@ -156,13 +156,13 @@ object cFORM: TcFORM
       Caption = 'Configurar manuten'#231#227'o'
       OnClick = bConfigurarManutencaoClick
     end
-    object bConfigurarValidacao: TMenuItem
-      Caption = 'Configurar valida'#231#227'o'
-      OnClick = bConfigurarValidacaoClick
-    end
     object bConfigurarRelatorio: TMenuItem
       Caption = 'Configurar relat'#243'rio'
       OnClick = bConfigurarRelatorioClick
+    end
+    object bConfigurarValidacao: TMenuItem
+      Caption = 'Configurar valida'#231#227'o'
+      OnClick = bConfigurarValidacaoClick
     end
     object bMoverCampo: TMenuItem
       Caption = 'Mover campo'

@@ -206,4 +206,16 @@ inherited fLIVRO: TfLIVRO
       end
     end
   end
+  inherited _CoolBar: TCoolBar
+    inherited _ToolBar: TToolBar
+      object ToolButtonEtiqueta: TToolButton
+        Left = 459
+        Top = 0
+        AutoSize = True
+        Caption = 'Etiqueta'
+        ImageIndex = 16
+        OnClick = ToolButtonEtiquetaClick
+      end
+    end
+  end
 end

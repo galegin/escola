@@ -69,7 +69,6 @@ begin
       'inner join GER_CURSO b on (b.CD_CURSO = a.CD_CURSO) ' +
       'inner join GER_EDITORA c on (c.CD_EDITORA = a.CD_EDITORA) ' +
       'inner join GER_GENERO d on (d.CD_GENERO = a.CD_GENERO) ' +
-      //'where a.TP_SITUACAO = 1 ' +
     ') where TP_SITUACAO = 1 ' ;
 end;
 

@@ -1372,8 +1372,8 @@ object cMENU: TcMENU
       end
       item
         Alignment = taCenter
-        Text = 'vers'#227'o 1.0'
-        Width = 70
+        Text = 'vers'#227'o 19.03.01'
+        Width = 100
       end
       item
         Alignment = taCenter

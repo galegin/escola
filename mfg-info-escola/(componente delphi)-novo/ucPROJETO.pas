@@ -16,7 +16,7 @@ type
 implementation
 
 uses
-  ucARQUIVO, ucPATH;
+  ucARQUIVO, ucPATH, ucVERSAOEXE;
 
 class function TcPROJETO.Codigo() : String;
 begin
@@ -34,6 +34,10 @@ class function TcPROJETO.Versao() : String;
 var
   vDtCriacao : TDateTime;
 begin
+  Result := ucVersaoExe.Instance._VersaoSis;
+  if (Result <> '00.00.00') then
+    Exit;
+
   vDtCriacao := TcARQUIVO.DataDeCriacao(TcPATH.ArquivoDll());
   Result := FormatDateTime('yy.mm.dd', vDtCriacao);
 end;

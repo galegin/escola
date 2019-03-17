@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ucCADASTRO, DBTables, DB, DBClient, ImgList, ExtCtrls, Grids, DBGrids,
   Buttons, StdCtrls, ComCtrls, ToolWin, Provider, FMTBcd, SqlExpr, Mask, DBCtrls,
-  Menus, ucFORM;
+  Menus, StrUtils, ucFORM;
 
 type
   TfLIVRO = class(TcCADASTRO)
@@ -33,9 +33,11 @@ type
     Label4: TLabel;
     LabelExemplar: TLabel;
     EditExemplar: TEdit;
+    ToolButtonEtiqueta: TToolButton;
     procedure FormCreate(Sender: TObject);
     procedure ToolButtonConsultarClick(Sender: TObject);
     procedure ButtonClassificarClick(Sender: TObject);
+    procedure ToolButtonEtiquetaClick(Sender: TObject);
   private
   public
   end;
@@ -45,7 +47,8 @@ implementation
 {$R *.dfm}
 
 uses
-  ucSELECT, ucFUNCAO, ucCONST, ucDADOS, ucITEM, ucXML, StrUtils;
+  ucSELECT, ucFUNCAO, ucCONST, ucDADOS, ucITEM, ucXML,
+  uRELETIQUETA;
 
 procedure TfLIVRO.FormCreate(Sender: TObject);
 begin
@@ -129,6 +132,30 @@ begin
   end;
 
   Mensagem('Tipo de ensino classificado com sucesso!');
+end;
+
+procedure TfLIVRO.ToolButtonEtiquetaClick(Sender: TObject);
+var
+  vParams, vSql : String;
+begin
+  if _DataSet.IsEmpty then
+    raise Exception.Create(cMESSAGE_CONSULTAVAZIA);
+
+  vSql :=
+    'select liv.CD_LIVRO || '' - '' || liv.DS_TITULO as DS_TITULO ' +
+    ',      edi.DS_EDITORA ' +
+    ',      liv.DS_AUTOR ' +
+    ',      liv.NR_ANO ' +
+    'from ({SQL}) liv ' +
+    'left outer join GER_EDITORA edi on (edi.CD_EDITORA = liv.CD_EDITORA) ' ;
+  vSql := AnsiReplaceStr(vSql, '{SQL}', AnsiReplaceStr(_Query.SQL.Text, sLineBreak, ' '));
+
+  if (PageControl1.ActivePage = TabSheet2) or not Pergunta('Imprimir todos ?') then
+    vSql := vSql + 'where liv.CD_LIVRO = ''' + item('CD_LIVRO', _DataSet) + ''' ' ;
+
+  vParams := '';
+  putitemX(vParams, 'DS_SQL', vSql);
+  TrRELETIQUETA.execute(vParams);
 end;
 
 initialization

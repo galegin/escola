@@ -50,13 +50,14 @@ implementation
 {$R *.dfm}
 
 uses
-  ucFUNCAO, ucDADOS, ucMENU, ucCOMP, ucITEM, ucXML;
+  ucFUNCAO, ucDADOS, ucMENU, ucCOMP, ucITEM, ucXML, ucFORM;
 
 procedure TcUSUARIO.FormCreate(Sender: TObject);
 begin
   inherited;
+  cModoFormulario := mfAlteracaoSomente;
   _TabMan := 'ADM_USUARIO';
-  _KeyMan := 'CD_USUARIO';
+  _KeyMan := 'NM_LOGIN';
 end;
 
 procedure TcUSUARIO.FormShow(Sender: TObject);

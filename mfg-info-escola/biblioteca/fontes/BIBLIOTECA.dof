@@ -112,7 +112,7 @@ RootDir=C:\Program Files (x86)\Borland\Delphi7\Bin\
 [Version Info]
 IncludeVerInfo=1
 AutoIncBuild=0
-MajorVer=2019
+MajorVer=19
 MinorVer=3
 Release=16
 Build=0
@@ -126,7 +126,7 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=MFG-Info
 FileDescription=Controle de Biblioteca
-FileVersion=2019.3.16.0
+FileVersion=19.3.16.0
 InternalName=
 LegalCopyright=
 LegalTrademarks=
