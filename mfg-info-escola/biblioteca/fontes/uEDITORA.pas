@@ -25,6 +25,7 @@ begin
   _TabMan := 'GER_EDITORA';
   _KeyMan := 'CD_EDITORA';
   _IncMan := 'CD_EDITORA';
+  _ValMan := 'DS_EDITORA';
 end;
 
 initialization

@@ -25,6 +25,7 @@ begin
   _TabMan := 'GER_TURMA';
   _KeyMan := 'CD_TURMA';
   _IncMan := 'CD_TURMA';
+  _ValMan := 'DS_TURMA';
 end;
 
 initialization

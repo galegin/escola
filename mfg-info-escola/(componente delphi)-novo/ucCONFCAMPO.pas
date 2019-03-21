@@ -6,6 +6,8 @@ uses
   Classes, SysUtils, StrUtils;
 
 type
+  TpCONFCAMPO = (tpcKey, tpcReq, tpcNul);
+
   TcCONFCAMPO = class;
   TcCONFCAMPOClass = class of TcCONFCAMPO;
 
@@ -13,15 +15,12 @@ type
   private
     FCodigo: String;
     FDescricao: String;
+    FTipo: TpCONFCAMPO;
     FDecimal: Integer;
     FTamanho: Integer;
     FTamanhoRel: Integer;
     FInManut: Boolean;
     FInRelat: Boolean;
-    FInObrig: boolean;
-    FInChave: Boolean;
-    FInVisib: Boolean;
-    FInEdita: Boolean;
     FInIncre: Boolean;
     FInValid: Boolean;
     procedure SetCodigo(const Value: String);
@@ -29,12 +28,9 @@ type
     procedure SetTamanho(const Value: Integer);
     procedure SetTamanhoRel(const Value: Integer);
     procedure SetDecimal(const Value: Integer);
+    procedure SetTipo(const Value: TpCONFCAMPO);
     procedure SetInManut(const Value: Boolean);
     procedure SetInRelat(const Value: Boolean);
-    procedure SetInChave(const Value: Boolean);
-    procedure SetInObrig(const Value: boolean);
-    procedure SetInEdita(const Value: Boolean);
-    procedure SetInVisib(const Value: Boolean);
     procedure SetInIncre(const Value: Boolean);
     procedure SetInValid(const Value: Boolean);
   protected
@@ -42,14 +38,11 @@ type
   published
     property Codigo : String read FCodigo write SetCodigo;
     property Descricao : String read FDescricao write SetDescricao;
+    property Tipo : TpCONFCAMPO read FTipo write SetTipo;
     property Tamanho : Integer read FTamanho write SetTamanho;
     property TamanhoRel : Integer read FTamanhoRel write SetTamanhoRel;
     property Decimal : Integer read FDecimal write SetDecimal;
-    property InChave : Boolean read FInChave write SetInChave;
     property InIncre : Boolean read FInIncre write SetInIncre;
-    property InObrig : boolean read FInObrig write SetInObrig;
-    property InVisib : Boolean read FInVisib write SetInVisib;
-    property InEdita : Boolean read FInEdita write SetInEdita;
     property InManut : Boolean read FInManut write SetInManut;
     property InRelat : Boolean read FInRelat write SetInRelat;
     property InValid : Boolean read FInValid write SetInValid;
@@ -91,9 +84,6 @@ type
     function IsContemRelat() : Boolean;
     function GetListaRelat() : TcCONFCAMPOLIST;
     function GetPrimeiraRelat() : TcCONFCAMPO;
-    function IsContemVisib() : Boolean;
-    function GetListaVisib() : TcCONFCAMPOLIST;
-    function GetPrimeiraVisib() : TcCONFCAMPO;
   published
     property _ColMan : String read GetColMan;
     property _IncMan : String read GetIncMan;
@@ -103,10 +93,32 @@ type
     property _TamRel : String read GetTamRel;
   end;
 
+  function TipoCampoToStr(pTipo : TpCONFCAMPO) : String;
+  function StrToTipoCampo(pTipo : String) : TpCONFCAMPO;
+
 implementation
 
 uses
   ucITEM;
+
+const
+  TpCONFCAMPOConst : Array [TpCONFCAMPO] of String = (
+    'Key', 'Req', 'Nul');
+
+  function TipoCampoToStr(pTipo : TpCONFCAMPO) : String;
+  begin
+    Result := TpCONFCAMPOConst[pTipo];
+  end;
+
+  function StrToTipoCampo(pTipo : String) : TpCONFCAMPO;
+  var
+    I : Integer;
+  begin
+    Result := TpCONFCAMPO(Ord(-1));
+    for I := 0 to Ord(High(TpCONFCAMPO)) do
+      if (pTipo = TpCONFCAMPOConst[TpCONFCAMPO(Ord(I))]) then
+        Result := TpCONFCAMPO(Ord(I));
+  end;
 
 { TcCONFCAMPO }
 
@@ -130,14 +142,9 @@ begin
   FInValid := Value;
 end;
 
-procedure TcCONFCAMPO.SetInChave(const Value: Boolean);
+procedure TcCONFCAMPO.SetTipo(const Value: TpCONFCAMPO);
 begin
-  FInChave := Value;
-end;
-
-procedure TcCONFCAMPO.SetInEdita(const Value: Boolean);
-begin
-  FInEdita := Value;
+  FTipo := Value;
 end;
 
 procedure TcCONFCAMPO.SetInIncre(const Value: Boolean);
@@ -150,19 +157,9 @@ begin
   FInManut := Value;
 end;
 
-procedure TcCONFCAMPO.SetInObrig(const Value: boolean);
-begin
-  FInObrig := Value;
-end;
-
 procedure TcCONFCAMPO.SetInRelat(const Value: Boolean);
 begin
   FInRelat := Value;
-end;
-
-procedure TcCONFCAMPO.SetInVisib(const Value: Boolean);
-begin
-  FInVisib := Value;
 end;
 
 procedure TcCONFCAMPO.SetTamanho(const Value: Integer);
@@ -232,7 +229,7 @@ begin
   Result := TcCONFCAMPOLIST.Create;
 
   for I := 0 to Count - 1 do
-    if (Item[I].InChave) then
+    if (Item[I].Tipo in [tpcKey]) then
       Result.Adicionar(Item[I]);
 end;
 
@@ -261,7 +258,7 @@ begin
   Result := TcCONFCAMPOLIST.Create;
 
   for I := 0 to Count - 1 do
-    if (Item[I].InObrig) then
+    if (Item[I].Tipo in [tpcKey, tpcReq]) then
       Result.Adicionar(Item[I]);
 end;
 
@@ -386,35 +383,6 @@ var
   vLista : TcCONFCAMPOLIST;
 begin
   vLista := GetListaRelat();
-  if (vLista.Count > 0) then
-    Result := vLista.Item[0]
-  else
-    Result := nil;
-end;
-
-//--
-
-function TcCONFCAMPOLIST.IsContemVisib: Boolean;
-begin
-  Result := GetListaVisib().Count > 0;
-end;
-
-function TcCONFCAMPOLIST.GetListaVisib: TcCONFCAMPOLIST;
-var
-  I : Integer;
-begin
-  Result := TcCONFCAMPOLIST.Create;
-
-  for I := 0 to Count - 1 do
-    if (Item[I].InVisib) then
-      Result.Adicionar(Item[I]);
-end;
-
-function TcCONFCAMPOLIST.GetPrimeiraVisib: TcCONFCAMPO;
-var
-  vLista : TcCONFCAMPOLIST;
-begin
-  vLista := GetListaVisib();
   if (vLista.Count > 0) then
     Result := vLista.Item[0]
   else

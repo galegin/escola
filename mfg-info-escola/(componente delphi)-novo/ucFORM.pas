@@ -53,11 +53,9 @@ type
     bConsultaLog: TMenuItem;
     bObservacao: TMenuItem;
     bConfigurarManutencao: TMenuItem;
-    bConfigurarRelatorio: TMenuItem;
     bMoverCampo: TMenuItem;
     bAjustarCampo: TMenuItem;
-    bConfigurarValidacao: TMenuItem;
-    pConfigurarIncremento: TMenuItem;
+    bConfigurarRelatorio: TMenuItem;
 
     procedure ColorControl(Sender: TObject);
 
@@ -137,10 +135,8 @@ type
     procedure ToolButtonClick(Sender: TObject);
     procedure bConsultaLogClick(Sender: TObject);
     procedure bObservacaoClick(Sender: TObject);
-    procedure bConfigurarIncrementoClick(Sender: TObject);
     procedure bConfigurarManutencaoClick(Sender: TObject);
     procedure bConfigurarRelatorioClick(Sender: TObject);
-    procedure bConfigurarValidacaoClick(Sender: TObject);
     procedure bMoverCampoClick(Sender: TObject);
     procedure bAjustarCampoClick(Sender: TObject);
   private
@@ -230,7 +226,7 @@ implementation
 uses
   ucCADASTROFUNC, ucFUNCAO, ucITEM, ucDADOS, ucMENU, ucCONST, ucOBS, ucXML,
   ucLOGALTERACAO, ucSELECT, ucMETADATA,
-  ucCONFMANUT, ucCONFRELAT, ucCONFINCRE, ucCONFVALID;
+  ucCONFMANUT, ucCONFRELAT;
 
   procedure TcFORM.p_LerIni;
   begin
@@ -1619,12 +1615,6 @@ begin
   TcOBS.Editar(_DataSet, _TabMan);
 end;
 
-procedure TcFORM.bConfigurarIncrementoClick(Sender: TObject);
-begin
-  TcCONFINCRE.Executar(_Caption, _TabMan);
-  CarregarConfCampoList;
-end;
-
 procedure TcFORM.bConfigurarManutencaoClick(Sender: TObject);
 begin
   TcCONFMANUT.Executar(_Caption, _TabMan);
@@ -1634,12 +1624,6 @@ end;
 procedure TcFORM.bConfigurarRelatorioClick(Sender: TObject);
 begin
   TcCONFRELAT.Executar(_Caption, _TabMan);
-  CarregarConfCampoList;
-end;
-
-procedure TcFORM.bConfigurarValidacaoClick(Sender: TObject);
-begin
-  TcCONFVALID.Executar(_Caption, _TabMan);
   CarregarConfCampoList;
 end;
 
@@ -1707,7 +1691,7 @@ end;
 
 function TcFORM.GetValMan: String;
 begin
-  Result := FIncMan;
+  Result := FValMan;
 
   if (Result = '') then
     Result := FConfCampoList._ValMan;

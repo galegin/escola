@@ -114,7 +114,7 @@ IncludeVerInfo=1
 AutoIncBuild=0
 MajorVer=19
 MinorVer=3
-Release=16
+Release=20
 Build=0
 Debug=0
 PreRelease=0
@@ -126,7 +126,7 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=MFG-Info
 FileDescription=Controle de Biblioteca
-FileVersion=19.3.16.0
+FileVersion=19.3.20.0
 InternalName=
 LegalCopyright=
 LegalTrademarks=

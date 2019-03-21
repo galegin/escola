@@ -43,14 +43,11 @@ begin
     vJsonObj := TlkJSONobject.Create();
     vJsonObj.Add('Codigo', vConfCampo.Codigo);
     vJsonObj.Add('Descricao', vConfCampo.Descricao);
+    vJsonObj.Add('Tipo', TipoCampoToStr(vConfCampo.Tipo));
     vJsonObj.Add('Tamanho', vConfCampo.Tamanho);
     vJsonObj.Add('TamanhoRel', vConfCampo.TamanhoRel);
     vJsonObj.Add('Decimal', vConfCampo.Decimal);
-    vJsonObj.Add('InChave', vConfCampo.InChave);
     vJsonObj.Add('InIncre', vConfCampo.InIncre);
-    vJsonObj.Add('InObrig', vConfCampo.InObrig);
-    vJsonObj.Add('InVisib', vConfCampo.InVisib);
-    vJsonObj.Add('InEdita', vConfCampo.InEdita);
     vJsonObj.Add('InManut', vConfCampo.InManut);
     vJsonObj.Add('InRelat', vConfCampo.InRelat);
     vJsonObj.Add('InValid', vConfCampo.InValid);
@@ -89,14 +86,11 @@ begin
     with Result.Adicionar do begin
       Codigo := vJsonObj.Field['Codigo'].Value;
       Descricao := vJsonObj.Field['Descricao'].Value;
+      Tipo := StrToTipoCampo(vJsonObj.Field['Tipo'].Value);
       Tamanho := vJsonObj.Field['Tamanho'].Value;
       TamanhoRel := vJsonObj.Field['TamanhoRel'].Value;
       Decimal := vJsonObj.Field['Decimal'].Value;
-      InChave := vJsonObj.Field['InChave'].Value;
       InIncre := vJsonObj.Field['InIncre'].Value;
-      InObrig := vJsonObj.Field['InObrig'].Value;
-      InVisib := vJsonObj.Field['InVisib'].Value;
-      InEdita := vJsonObj.Field['InEdita'].Value;
       InManut := vJsonObj.Field['InManut'].Value;
       InRelat := vJsonObj.Field['InRelat'].Value;
       InValid := vJsonObj.Field['InValid'].Value;

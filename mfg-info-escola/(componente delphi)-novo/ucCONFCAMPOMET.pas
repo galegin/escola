@@ -19,7 +19,6 @@ type
 implementation
 
 uses
-  //ucCADASTROFUNC,
   ucFUNCAO, ucCONST, ucITEM, ucXML, ucDADOS, ucCAMPO,
   ucMETADATA;
 
@@ -31,9 +30,7 @@ const
   cMETHOD = 'TcCONFCAMPOMET.Carregar()';
 var
   vMetadata, vLstCod, vCod, vDes : String;
-  vInChave, vInValid, vInIncre : Boolean;
-  vConfCampo : TcCONFCAMPO;
-  I : Integer;
+  vTipo : TpCONFCAMPO;
 begin
   if (pCaption = '') then
     raise Exception.Create('Caption deve ser informado / ' + cMETHOD);
@@ -48,7 +45,7 @@ begin
   vMetadata := dDADOS.GetMetadataEnt(pTabMan);
   vMetadata := itemX('fields', vMetadata);
   vLstCod := TcMETADATA.getMetadataXml(vMetadata, 'cod');
-  vInChave := True;
+  vTipo := tpcKey;
 
   while (vLstCod <> '') do begin
     vCod := getitem(vLstCod);
@@ -56,7 +53,7 @@ begin
     delitem(vLstCod);
 
     if (Pos(vCod, 'TP_SITUACAO') > 0) then begin
-      vInChave := False;
+      vTipo := tpcReq;
       Continue;
     end;
 
@@ -64,31 +61,10 @@ begin
 
     with Result.Adicionar do begin
       Codigo := vCod;
+      Tipo := vTipo;
       Descricao := vDes;
-      InChave := vInChave;
       InManut := True;
       InRelat := True;
-      InVisib := True;
-      InIncre := False;
-      InValid := False;
-    end;
-  end;
-
-  vInIncre := True;
-  vInValid := True;
-
-  for I := 0 to Result.Count - 1 do begin
-    vConfCampo := Result.Item[I];
-
-    if (vConfCampo.InChave) then begin
-      if (Result.GetListaChave().Count = 1) then begin
-        vConfCampo.InIncre := vInIncre;
-        vInIncre := False;
-      end;
-    end
-    else begin
-      vConfCampo.InValid := vInValid;
-      vInValid := False;
     end;
   end;
 end;

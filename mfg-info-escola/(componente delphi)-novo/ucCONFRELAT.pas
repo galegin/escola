@@ -5,15 +5,15 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, Buttons, ExtCtrls, ComCtrls, ToolWin, CheckLst,
-  ucCONFMANUT, ucCONFCAMPO;
+  ucCONFMANUT, ucCONFCAMPO, DB, DBClient, Grids, DBGrids;
 
 type
   TcCONFRELAT = class(TcCONFMANUT)
     procedure FormCreate(Sender: TObject);
   private
   protected
-    function GetFlag(pConfCampo : TcCONFCAMPO) : Boolean; override;
-    procedure SetFlag(pConfCampo : TcCONFCAMPO; Value : Boolean); override;
+    procedure SetClientDataSetConf(pConfCampo : TcCONFCAMPO); override;
+    procedure GetClientDataSetConf(pConfCampo : TcCONFCAMPO); override;
   public
   end;
 
@@ -21,20 +21,28 @@ implementation
 
 {$R *.dfm}
 
+  procedure TcCONFRELAT.SetClientDataSetConf(pConfCampo: TcCONFCAMPO);
+  begin
+    ClientDataSetConfCodigo.AsString := pConfCampo.Codigo;
+    ClientDataSetConfDescricao.AsString := pConfCampo.Descricao;
+    ClientDataSetConfTam.AsInteger := pConfCampo.TamanhoRel;
+    ClientDataSetConfDec.AsInteger := pConfCampo.Decimal;
+    ClientDataSetConfVisivel.AsBoolean := pConfCampo.InRelat;
+  end;
+
+  procedure TcCONFRELAT.GetClientDataSetConf(pConfCampo: TcCONFCAMPO);
+  begin
+    pConfCampo.Tipo := StrToTipoCampo(ClientDataSetConfTipo.AsString);
+    pConfCampo.TamanhoRel := ClientDataSetConfTam.AsInteger;
+    pConfCampo.Decimal := ClientDataSetConfDec.AsInteger;
+    pConfCampo.InRelat := ClientDataSetConfVisivel.AsBoolean;
+  end;
+
 procedure TcCONFRELAT.FormCreate(Sender: TObject);
 begin
-  _Titulo := 'Configura Relatório';
   inherited;
-end;
-
-function TcCONFRELAT.GetFlag(pConfCampo: TcCONFCAMPO): Boolean;
-begin
-  Result := pConfCampo.InRelat;
-end;
-
-procedure TcCONFRELAT.SetFlag(pConfCampo: TcCONFCAMPO; Value: Boolean);
-begin
-  pConfCampo.InRelat := Value;
+  _Titulo := 'Configura Relatório';
+  _InManut := False;
 end;
 
 end.

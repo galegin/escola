@@ -55,6 +55,7 @@ begin
   _TabMan := 'GER_LIVRO';
   _KeyMan := 'CD_LIVRO';
   _IncMan := 'CD_LIVRO';
+  _ValMan := 'DS_TITULO';
 
   fCD_CURSO.Tag := TAG_FK;
   fCD_GENERO.Tag := TAG_FK;

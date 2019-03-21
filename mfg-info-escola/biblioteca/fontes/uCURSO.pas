@@ -25,6 +25,7 @@ begin
   _TabMan := 'GER_CURSO';
   _KeyMan := 'CD_CURSO';
   _IncMan := 'CD_CURSO';
+  _ValMan := 'DS_CURSO';
 end;
 
 initialization

@@ -24,6 +24,7 @@ begin
   _TabMan := 'GER_TPENSINO';
   _KeyMan := 'TP_ENSINO';
   _IncMan := 'TP_ENSINO';
+  _ValMan := 'DS_ENSINO';
 end;
 
 initialization

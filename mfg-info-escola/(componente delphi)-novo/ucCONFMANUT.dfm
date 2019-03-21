@@ -1,6 +1,6 @@
 object cCONFMANUT: TcCONFMANUT
-  Left = 237
-  Top = 196
+  Left = 466
+  Top = 162
   BorderStyle = bsNone
   Caption = 'Configura Manuten'#231#227'o'
   ClientHeight = 404
@@ -26,7 +26,7 @@ object cCONFMANUT: TcCONFMANUT
     Height = 404
     Align = alClient
     TabOrder = 0
-    object Label5: TLabel
+    object LabelCampo: TLabel
       Left = 8
       Top = 64
       Width = 33
@@ -34,11 +34,11 @@ object cCONFMANUT: TcCONFMANUT
       Caption = 'Campo'
       Transparent = True
     end
-    object Shape7: TShape
-      Left = 54
+    object ShapeCampo: TShape
+      Left = 74
       Top = 62
-      Width = 433
-      Height = 257
+      Width = 413
+      Height = 231
     end
     object RxLabel3: TLabel
       Left = 1
@@ -283,6 +283,36 @@ object cCONFMANUT: TcCONFMANUT
       ParentFont = False
       OnClick = ToolButtonCancelClick
     end
+    object ShapeIncre: TShape
+      Left = 74
+      Top = 301
+      Width = 149
+      Height = 25
+      Shape = stRoundRect
+    end
+    object ShapeValid: TShape
+      Left = 338
+      Top = 301
+      Width = 149
+      Height = 25
+      Shape = stRoundRect
+    end
+    object LabelIncre: TLabel
+      Left = 8
+      Top = 304
+      Width = 53
+      Height = 13
+      Caption = 'Incremento'
+      Transparent = True
+    end
+    object LabelValid: TLabel
+      Left = 280
+      Top = 304
+      Width = 47
+      Height = 13
+      Caption = 'Valida'#231#227'o'
+      Transparent = True
+    end
     object CoolBar1: TCoolBar
       Left = 1
       Top = 337
@@ -333,14 +363,120 @@ object cCONFMANUT: TcCONFMANUT
         end
       end
     end
-    object FItems: TCheckListBox
-      Left = 56
-      Top = 64
-      Width = 429
-      Height = 253
-      Columns = 2
+    object ComboBoxIncre: TComboBox
+      Left = 76
+      Top = 304
+      Width = 145
+      Height = 21
+      Style = csDropDownList
       ItemHeight = 13
       TabOrder = 1
     end
+    object ComboBoxValid: TComboBox
+      Left = 340
+      Top = 304
+      Width = 145
+      Height = 21
+      Style = csDropDownList
+      ItemHeight = 13
+      TabOrder = 2
+    end
+    object DBGridConf: TDBGrid
+      Left = 76
+      Top = 64
+      Width = 409
+      Height = 225
+      DataSource = DataSourceConf
+      FixedColor = 12615680
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgTabs, dgConfirmDelete, dgCancelOnExit]
+      ParentFont = False
+      TabOrder = 3
+      TitleFont.Charset = DEFAULT_CHARSET
+      TitleFont.Color = clWhite
+      TitleFont.Height = -11
+      TitleFont.Name = 'MS Sans Serif'
+      TitleFont.Style = []
+      OnColEnter = DBGridConfColEnter
+      OnDblClick = DBGridConfDblClick
+      OnTitleClick = DBGridConfTitleClick
+    end
+  end
+  object ClientDataSetConf: TClientDataSet
+    Active = True
+    Aggregates = <>
+    FieldDefs = <
+      item
+        Name = 'Codigo'
+        DataType = ftString
+        Size = 30
+      end
+      item
+        Name = 'Descricao'
+        DataType = ftString
+        Size = 30
+      end
+      item
+        Name = 'Tipo'
+        DataType = ftString
+        Size = 5
+      end
+      item
+        Name = 'Tam'
+        DataType = ftInteger
+      end
+      item
+        Name = 'Dec'
+        DataType = ftInteger
+      end
+      item
+        Name = 'Visivel'
+        DataType = ftBoolean
+      end>
+    IndexDefs = <>
+    Params = <>
+    StoreDefs = True
+    Left = 320
+    Top = 112
+    Data = {
+      940000009619E0BD010000001800000006000000000003000000940006436F64
+      69676F0100490000000100055749445448020002001E00094465736372696361
+      6F0100490000000100055749445448020002001E00045469706F010049000000
+      01000557494454480200020005000354616D0400010000000000034465630400
+      010000000000075669736976656C02000300000000000000}
+    object ClientDataSetConfCodigo: TStringField
+      FieldName = 'Codigo'
+      Visible = False
+      Size = 30
+    end
+    object ClientDataSetConfDescricao: TStringField
+      DisplayWidth = 25
+      FieldName = 'Descricao'
+      Size = 30
+    end
+    object ClientDataSetConfTipo: TStringField
+      FieldName = 'Tipo'
+      Size = 5
+    end
+    object ClientDataSetConfTam: TIntegerField
+      DisplayWidth = 3
+      FieldName = 'Tam'
+    end
+    object ClientDataSetConfDec: TIntegerField
+      DisplayWidth = 3
+      FieldName = 'Dec'
+    end
+    object ClientDataSetConfVisivel: TBooleanField
+      FieldName = 'Visivel'
+    end
+  end
+  object DataSourceConf: TDataSource
+    DataSet = ClientDataSetConf
+    Left = 352
+    Top = 112
   end
 end

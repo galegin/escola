@@ -30,6 +30,7 @@ begin
   inherited;
   _TabMan := 'ADM_PARAM';
   _KeyMan := 'CD_PARAMETRO';
+  _ValMan := 'NM_PARAMETRO';
 end;
 
 procedure TcPARAMETRO.ToolButtonGravarClick(Sender: TObject);

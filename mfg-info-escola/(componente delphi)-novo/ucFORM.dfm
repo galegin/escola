@@ -148,10 +148,6 @@ object cFORM: TcFORM
       Caption = 'Observa'#231#227'o'
       OnClick = bObservacaoClick
     end
-    object pConfigurarIncremento: TMenuItem
-      Caption = 'Configurar incremento'
-      OnClick = bConfigurarIncrementoClick
-    end
     object bConfigurarManutencao: TMenuItem
       Caption = 'Configurar manuten'#231#227'o'
       OnClick = bConfigurarManutencaoClick
@@ -159,10 +155,6 @@ object cFORM: TcFORM
     object bConfigurarRelatorio: TMenuItem
       Caption = 'Configurar relat'#243'rio'
       OnClick = bConfigurarRelatorioClick
-    end
-    object bConfigurarValidacao: TMenuItem
-      Caption = 'Configurar valida'#231#227'o'
-      OnClick = bConfigurarValidacaoClick
     end
     object bMoverCampo: TMenuItem
       Caption = 'Mover campo'

@@ -58,6 +58,7 @@ begin
   cModoFormulario := mfAlteracaoSomente;
   _TabMan := 'ADM_USUARIO';
   _KeyMan := 'NM_LOGIN';
+  _ValMan := 'NM_USUARIO';
 end;
 
 procedure TcUSUARIO.FormShow(Sender: TObject);

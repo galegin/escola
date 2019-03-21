@@ -25,6 +25,7 @@ begin
   _TabMan := 'GER_GENERO';
   _KeyMan := 'CD_GENERO';
   _IncMan := 'CD_GENERO';
+  _ValMan := 'DS_GENERO';
 end;
 
 initialization
