@@ -104,7 +104,7 @@ begin
 
   TcCADASTROFUNC.CorrigeShapeTela(Self);
 
-  if IfNullB(LerIni(cCaption, CAD_DES), True) then begin
+  if IfNullB(LerIni(cCaption, CAD_DES), False) then begin
     TcFORM(Self).p_SetarDescr(dfCD_LIVRO, mfConsulta);
     TcFORM(Self).p_SetarDescr(dfCD_LOCADOR, mfConsulta);
   end;

@@ -47,6 +47,7 @@ type
     procedure ToolButtonDevolverClick(Sender: TObject);
     procedure ToolButtonRenovarClick(Sender: TObject);
     procedure ToolButtonPgDebitoClick(Sender: TObject);
+    procedure ToolButtonPgTodosDebitoClick(Sender: TObject);
     procedure ToolButtonLimparClick(Sender: TObject);
     procedure ToolButtonConsultaClick(Sender: TObject);
     procedure bImprimeReciboClick(Sender: TObject);
@@ -57,7 +58,11 @@ type
     procedure EditExit(Sender: TObject);
     procedure _DataSetAfterOpen(DataSet: TDataSet);
   private
+    FVlSaldo: Real;
+    procedure SetVlSaldo(const Value: Real);
   public
+  published
+    property _VlSaldo : Real read FVlSaldo write SetVlSaldo;
   end;
 
 var
@@ -68,7 +73,7 @@ implementation
 {$R *.dfm}
 
 uses
-  ucRELATORIO, ucSELECT, ucFUNCAO, ucITEM, ucDADOS, ucCOMPPESQ, ucCOMP, 
+  ucRELATORIO, ucSELECT, ucFUNCAO, ucITEM, ucDADOS, ucCOMPPESQ, ucCOMP,
   ucCADASTROFUNC, uINFLIV, ucCONST, ucMENU, ucXML;
 
 procedure TfLOCACAO.FormCreate(Sender: TObject);
@@ -122,7 +127,7 @@ begin
   bIsentaMulta.Checked := IfNullB(LerIni(_Caption, ISE_MUL), False);
   bIsentaMotivo.Checked := IfNullB(LerIni(_Caption, ISE_MOT), False);
 
-  if IfNullB(LerIni(_Caption, CAD_DES), True) then begin
+  if IfNullB(LerIni(_Caption, CAD_DES), False) then begin
     p_SetarDescr(dfCD_LIVRO, cModoFormulario);
     p_SetarDescr(dfCD_LOCADOR, cModoFormulario);
     p_SetarDescr(dfCD_TURMA, cModoFormulario);
@@ -176,7 +181,7 @@ var
 begin
   vSql := cSQL;
 
-  eSALDO.Text := '0.00';
+  _VlSaldo := 0;
 
   if fIN_ATRASADO.Checked then begin
     AddSqlWhere(vSql, 'a.TP_LOCACAO = 1 and a.DT_DEVOLUCAO < current_date ');
@@ -223,7 +228,7 @@ begin
                         'and VL_MULTA > 0 ' +
                         'and DT_PAGOMULTA is null ', 'SALDO'),0);
     if vVlSaldo > 0 then begin
-      eSALDO.Text := FormatFloat('0.00', vVlSaldo);
+      _VlSaldo := vVlSaldo;
     end;
   end;
 end;
@@ -574,6 +579,11 @@ var
 begin
   inherited;
 
+  if IfNullB(LerIni(PAG_DEB), True) then begin
+    ToolButtonPgTodosDebitoClick(Sender);
+    Exit;
+  end;
+
   if _DataSet.IsEmpty then
     raise Exception.Create(cMESSAGE_CONSULTAVAZIA);
 
@@ -587,7 +597,7 @@ begin
     raise Exception.Create('Pagamento da multa já efetuado!');
 
   //Efetua pagamento do debito
-  vSql := 'update GER_LOCACAO set DT_PAGOMULTA = current_date '+
+  vSql := 'update GER_LOCACAO set DT_PAGOMULTA = current_date ' +
           'where CD_LOCACAO = ''' + item('CD_LOCACAO', _DataSet) + ''' ';
 
   try
@@ -604,9 +614,43 @@ begin
   Mensagem('Débito pago com sucesso!');
 end;
 
+procedure TfLOCACAO.ToolButtonPgTodosDebitoClick(Sender: TObject);
+var
+  vSql : String;
+begin
+  inherited;
+
+  if (fCD_LOCADOR.Text = '') then
+    Exit;
+
+  if not Pergunta('Confirmar pagar todos débito!') then
+    Exit;
+
+  if (_VlSaldo <= 0) then
+    raise Exception.Create('Nenhum saldo de débito a pagar!');
+
+  //Efetua pagamento do debito
+  vSql := 'update GER_LOCACAO set DT_PAGOMULTA = current_date ' +
+          'where CD_LOCADOR = ''' + fCD_LOCADOR.Text + ''' and DT_PAGOMULTA is null ';
+
+  try
+    dDADOS.f_RunSQL(vSql);
+  except
+    on E: Exception do begin
+      Mensagem('Erro: ' + E.Message + ' / SQL: ' + vSql);
+      Exit;
+    end;
+  end;
+
+  ToolButtonConsultar.Click;
+
+  Mensagem('Todos débitos pagos com sucesso!');
+end;
+
 procedure TfLOCACAO.ToolButtonLimparClick(Sender: TObject);
 begin
   inherited;
+  _VlSaldo := 0;
   fCD_LOCADOR.SetFocus;
 end;
 
@@ -640,35 +684,38 @@ begin
 end;
 
 procedure TfLOCACAO._DataSetAfterOpen(DataSet: TDataSet);
+var
+  vCampos : String;
 begin
-  with _DataSet do begin
-    FieldByName('CD_LOCACAO').Visible := False;
-    FieldByName('CD_LIVRO').Visible := False;
-    FieldByName('NR_EXEMPLAR').Visible := False;
+  vCampos := '';
 
-    if fCD_LOCADOR.Text <> '' then begin
-      FieldByName('CD_LOCADOR').Visible := False;
-      FieldByName('NM_LOCADOR').Visible := False;
-    end else if fCD_LIVRO.Text <> '' then begin
-      FieldByName('CD_LIVRO').Visible := False;
-      FieldByName('DS_TITULO').Visible := False;
+  if (fCD_LOCADOR.Text = '') then begin
+    putitem(vCampos, 'CD_LOCADOR', 06);
+    putitem(vCampos, 'NM_LOCADOR', 30);
+  end;
+
+  if (fCD_LIVRO.Text = '') then begin
+    if IfNullB(LerIni(_Caption, RED_LIV), False) then begin
+      putitem(vCampos, 'CD_LIVEXE', 06);
+    end else begin
+      putitem(vCampos, 'CD_LIVRO', 06);
+      putitem(vCampos, 'NR_EXEMPLAR', 05);
     end;
 
-    FieldByName('CD_LOCADOR').DisplayWidth := 06;
-    FieldByName('NM_LOCADOR').DisplayWidth := 30;
-    FieldByName('CD_LIVEXE').DisplayWidth := 06;
-    FieldByName('CD_LIVRO').DisplayWidth := 06;
-    FieldByName('NR_EXEMPLAR').DisplayWidth := 5;
-    FieldByName('DS_TITULO').DisplayWidth := 30;
-    FieldByName('CD_TURMA').DisplayWidth := 06;
-    FieldByName('NR_ANO').DisplayWidth := 06;
-    FieldByName('DT_LOCACAO').DisplayWidth := 10;
-    FieldByName('DT_DEVOLUCAO').DisplayWidth := 10;
-    FieldByName('DT_DEVOLVIDO').DisplayWidth := 10;
-    FieldByName('VL_MULTA').DisplayWidth := 10;
-    FieldByName('DT_PAGOMULTA').DisplayWidth := 10;
-    FieldByName('TP_LOCACAO').DisplayWidth := 15;
+    putitem(vCampos, 'DS_TITULO', 30);
   end;
+
+  putitem(vCampos, 'CD_TURMA', 06);
+  putitem(vCampos, 'NR_ANO', 06);
+  putitem(vCampos, 'DT_LOCACAO', 10);
+  putitem(vCampos, 'DT_DEVOLUCAO', 10);
+  putitem(vCampos, 'DT_DEVOLVIDO', 10);
+  putitem(vCampos, 'VL_MULTA', 10);
+  putitem(vCampos, 'DT_PAGOMULTA', 10);
+  putitem(vCampos, 'TP_LOCACAO', 15);
+
+  TcCADASTROFUNC.SetInVisibleAll(_DataSet);
+  TcCADASTROFUNC.SetVisibleAll(_DataSet, vCampos);
 
   inherited;
 end;
@@ -695,6 +742,12 @@ begin
     ToolButtonConsultar.Click;
 
   inherited;
+end;
+
+procedure TfLOCACAO.SetVlSaldo(const Value: Real);
+begin
+  FVlSaldo := Value;
+  eSALDO.Text := FormatFloat('0.00', FVlSaldo);
 end;
 
 initialization

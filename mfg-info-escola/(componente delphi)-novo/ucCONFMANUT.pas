@@ -271,6 +271,9 @@ begin
   if not Pergunta('Confirma gravação ?') then
     Exit;
 
+  vConfCampoIncre := nil;
+  vConfCampoValid := nil;
+
   if (_InManut) then begin
     with ComboBoxIncre do begin
       vConfCampoIncre := TcCONFCAMPO(Items.Objects[ItemIndex]);

@@ -101,6 +101,7 @@ const
   EML_NOME = 'EmlNome'; //Nome
 
   //Exportacao
+  
   EXP_INI  = 'ExpIni';
   EXP_SEP  = 'ExpSep';
   EXP_VIS  = 'ExpVis';
@@ -111,6 +112,8 @@ const
   IMP_REC = 'ImpRec'; //Imprime recibo
   IMP_CAR = 'ImpCar'; //Imprime cartao
   IMP_LIV = 'ImpLiv'; //Imprime livro
+  RED_LIV = 'RedLiv'; //Codigo reduzido livro
+  PAG_DEB = 'PagDeb'; //Pagar todos debitos
 
   //Locacao
 

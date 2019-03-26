@@ -238,6 +238,7 @@ var
   vLista : TcCONFCAMPOLIST;
 begin
   vLista := GetListaChave();
+
   if (vLista.Count > 0) then
     Result := vLista.Item[0]
   else
@@ -267,6 +268,7 @@ var
   vLista : TcCONFCAMPOLIST;
 begin
   vLista := GetListaObrig();
+
   if (vLista.Count > 0) then
     Result := vLista.Item[0]
   else
@@ -296,6 +298,7 @@ var
   vLista : TcCONFCAMPOLIST;
 begin
   vLista := GetListaIncre();
+
   if (vLista.Count > 0) then
     Result := vLista.Item[0]
   else
@@ -325,6 +328,7 @@ var
   vLista : TcCONFCAMPOLIST;
 begin
   vLista := GetListaValid();
+
   if (vLista.Count > 0) then
     Result := vLista.Item[0]
   else
@@ -354,6 +358,7 @@ var
   vLista : TcCONFCAMPOLIST;
 begin
   vLista := GetListaManut();
+
   if (vLista.Count > 0) then
     Result := vLista.Item[0]
   else
@@ -383,13 +388,16 @@ var
   vLista : TcCONFCAMPOLIST;
 begin
   vLista := GetListaRelat();
+
   if (vLista.Count > 0) then
     Result := vLista.Item[0]
   else
     Result := nil;
 end;
 
-//--
+//-----------------------------------
+//-----------------------------------
+//-----------------------------------
 
 function TcCONFCAMPOLIST.GetColMan: String;
 var
@@ -397,6 +405,7 @@ var
   I : Integer;
 begin
   vConfCampoChaveList := GetListaManut();
+
   for I := 0 to vConfCampoChaveList.Count - 1 do
     putitem(Result, vConfCampoChaveList.Item[I].Codigo);
 end;
@@ -405,8 +414,11 @@ function TcCONFCAMPOLIST.GetIncMan: String;
 var
   vConfCampoIncre : TcCONFCAMPO;
 begin
+  Result := '';
+
   vConfCampoIncre := GetPrimeiraIncre();
-  Result := IfThen(vConfCampoIncre <> nil, vConfCampoIncre.Codigo);
+  if (vConfCampoIncre <> nil) then
+    Result := vConfCampoIncre.Codigo;
 end;
 
 function TcCONFCAMPOLIST.GetKeyMan: String;
@@ -415,6 +427,7 @@ var
   I : Integer;
 begin
   Result := '';
+  
   vConfCampoChaveList := GetListaChave();
   for I := 0 to vConfCampoChaveList.Count - 1 do
     putitem(Result, vConfCampoChaveList.Item[I].Codigo);
@@ -424,8 +437,11 @@ function TcCONFCAMPOLIST.GetValMan: String;
 var
   vConfCampoValid : TcCONFCAMPO;
 begin
+  Result := '';
+  
   vConfCampoValid := GetPrimeiraValid();
-  Result := IfThen(vConfCampoValid <> nil, vConfCampoValid.Codigo);
+  if (vConfCampoValid <> nil) then
+    Result := vConfCampoValid.Codigo;
 end;
 
 function TcCONFCAMPOLIST.GetTamMan: String;
@@ -434,6 +450,7 @@ var
   I : Integer;
 begin
   Result := '';
+  
   vConfCampoChaveList := GetListaManut();
   for I := 0 to vConfCampoChaveList.Count - 1 do
     putitem(Result, vConfCampoChaveList.Item[I].Codigo, vConfCampoChaveList.Item[I].Tamanho);
@@ -445,6 +462,7 @@ var
   I : Integer;
 begin
   Result := '';
+  
   vConfCampoChaveList := GetListaRelat();
   for I := 0 to vConfCampoChaveList.Count - 1 do
     putitem(Result, vConfCampoChaveList.Item[I].Codigo, vConfCampoChaveList.Item[I].TamanhoRel);

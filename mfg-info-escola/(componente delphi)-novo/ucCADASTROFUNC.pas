@@ -39,6 +39,10 @@ type
     class procedure EditKeyPressNumero(Sender: TObject; var Key: Char);
 
     class procedure PosicaoTela(F : TControl);
+
+    class function GetAllFields(pDataSet : TDataSet) : String;
+    class procedure SetInVisibleAll(pDataSet : TDataSet; pCampos : String = '');
+    class procedure SetVisibleAll(pDataSet : TDataSet; pCampos : String = ''; pVisible : Boolean = True);
   end;
 
 implementation
@@ -452,6 +456,51 @@ begin
       Height := Screen.WorkAreaHeight;
       Width := Screen.WorkAreaWidth; // div 2;
     end;
+end;
+
+class function TcCADASTROFUNC.GetAllFields(pDataSet : TDataSet) : String;
+var
+  I : Integer;
+begin
+  Result := '';
+  with pDataSet do
+    for I := 0 to FieldCount - 1 do
+      putitem(Result, Fields[I].FieldName, Fields[I].Size);
+end;
+
+class procedure TcCADASTROFUNC.SetInVisibleAll(pDataSet : TDataSet; pCampos : String = '');
+begin
+  SetVisibleAll(pDataSet, pCampos, False);
+end;
+
+class procedure TcCADASTROFUNC.SetVisibleAll(pDataSet : TDataSet; pCampos : String = ''; pVisible : Boolean = True);
+var
+  vLstCod, vCod : String;
+  vTam : Integer;
+begin
+  if (pCampos = '') then
+    pCampos := GetAllFields(pDataSet);
+
+  vLstCod := listCd(pCampos);
+
+  while (vLstCod <> '') do begin
+    vCod := getitem(vLstCod);
+    if (vCod = '') then Break;
+    delitem(vLstCod);
+
+    vTam := itemI(vCod, pCampos);
+
+    with pDataSet do begin
+      if FindField(vCod) <> nil then begin
+        with FieldByName(vCod) do begin
+          Visible := pVisible;
+
+          if (vTam > 0) then
+            DisplayWidth := vTam;
+        end;
+      end;
+    end;
+  end;
 end;
 
 end.
