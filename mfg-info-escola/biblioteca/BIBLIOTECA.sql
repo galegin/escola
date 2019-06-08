@@ -1,5 +1,11 @@
 <doc>
 
+<script vrs="2019.04.27" >
+
+<cmd>alter table GER_LIVRO alter DS_TITULO type varchar(200)</cmd>
+
+</script>
+
 <script vrs="2015.05.01" >
 
 <cmd>alter table GER_LOCACAO add DS_ISENTAMOT varchar(40);</cmd>

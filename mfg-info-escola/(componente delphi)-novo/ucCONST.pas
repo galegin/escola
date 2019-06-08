@@ -109,6 +109,7 @@ const
   //Outros
 
   INF_LIV = 'InfLiv'; //Informa livro
+  INF_LIV_AUT = 'InfLivAut'; //Informa livro automatico
   IMP_REC = 'ImpRec'; //Imprime recibo
   IMP_CAR = 'ImpCar'; //Imprime cartao
   IMP_LIV = 'ImpLiv'; //Imprime livro

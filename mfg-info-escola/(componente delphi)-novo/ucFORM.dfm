@@ -164,5 +164,9 @@ object cFORM: TcFORM
       Caption = 'Ajustar campo'
       OnClick = bAjustarCampoClick
     end
+    object bCampoDescricao: TMenuItem
+      Caption = 'Campo Descricao'
+      OnClick = bCampoDescricaoClick
+    end
   end
 end

@@ -10,31 +10,32 @@ uses
 
 type
   TfLOCACAO = class(TcCADASTRO)
-    LabelLivro: TLabel;
     LabelLocador: TLabel;
     fCD_LOCADOR: TEdit;
     dfCD_LOCADOR: TEdit;
+    LabelTurma: TLabel;
     fCD_TURMA: TEdit;
     dfCD_TURMA: TEdit;
+    LabelLivro: TLabel;
     fCD_LIVRO: TEdit;
     dfCD_LIVRO: TEdit;
     ToolButtonLocar: TToolButton;
     ToolButtonRenovar: TToolButton;
     ToolButtonDevolver: TToolButton;
     ToolButtonPgDebito: TToolButton;
-    fTP_LOCACAO: TComboBox;
+    ToolButtonConsulta: TToolButton;
     LabelTipo: TLabel;
-    fIN_ATRASADO: TCheckBox;
+    fTP_LOCACAO: TComboBox;
     LabelAtrasado: TLabel;
-    LabelTurma: TLabel;
-    fTP_AGRUPAR: TComboBox;
+    fIN_ATRASADO: TCheckBox;
     LabelAgrupar: TLabel;
-    eSALDO: TEdit;
+    fTP_AGRUPAR: TComboBox;
     LabelSaldo: TLabel;
+    eSALDO: TEdit;
+    N5: TMenuItem;
     bImprimeRecibo: TMenuItem;
     bInformaLivro: TMenuItem;
-    N5: TMenuItem;
-    ToolButtonConsulta: TToolButton;
+    bInformaLivroAuto: TMenuItem;
     bIsentaMulta: TMenuItem;
     bIsentaMotivo: TMenuItem;
     procedure FormCreate(Sender: TObject);
@@ -52,6 +53,7 @@ type
     procedure ToolButtonConsultaClick(Sender: TObject);
     procedure bImprimeReciboClick(Sender: TObject);
     procedure bInformaLivroClick(Sender: TObject);
+    procedure bInformaLivroAutoClick(Sender: TObject);
     procedure bIsentaMultaClick(Sender: TObject);
     procedure bIsentaMotivoClick(Sender: TObject);
     procedure DBGrid1DblClick(Sender: TObject);
@@ -124,6 +126,7 @@ begin
 
   bImprimeRecibo.Checked := IfNullB(LerIni(_Caption, IMP_REC), True);
   bInformaLivro.Checked := IfNullB(LerIni(_Caption, INF_LIV), True);
+  bInformaLivroAuto.Checked := IfNullB(LerIni(_Caption, INF_LIV_AUT), False);
   bIsentaMulta.Checked := IfNullB(LerIni(_Caption, ISE_MUL), False);
   bIsentaMotivo.Checked := IfNullB(LerIni(_Caption, ISE_MOT), False);
 
@@ -413,7 +416,8 @@ begin
     end else begin
       fCD_LIVRO.Text := '';
       //ToolButtonConsultar.Click;
-      ToolButtonLocar.Click;
+      if bInformaLivroAuto.Checked then
+        ToolButtonLocar.Click;
     end;
   except
     on E: Exception do begin
@@ -424,7 +428,7 @@ begin
 end;
 
 procedure TfLOCACAO.ToolButtonDevolverClick(Sender: TObject);
-var
+var   
   vNrDiasCarencia, vNrDiasAtraso, vTpLocador : Integer;
   vSql, vDsMulta, vDsMotivo : String;
   vVlMultaDia, vVlMulta : Real;
@@ -668,7 +672,13 @@ end;
 procedure TfLOCACAO.bInformaLivroClick(Sender: TObject);
 begin
   bInformaLivro.Checked := not bInformaLivro.Checked;
-  fGravaIni(_Caption, IMP_LIV, bInformaLivro.Checked);
+  fGravaIni(_Caption, INF_LIV, bInformaLivro.Checked);
+end;
+
+procedure TfLOCACAO.bInformaLivroAutoClick(Sender: TObject);
+begin
+  bInformaLivroAuto.Checked := not bInformaLivroAuto.Checked;
+  fGravaIni(_Caption, INF_LIV_AUT, bInformaLivroAuto.Checked);
 end;
 
 procedure TfLOCACAO.bIsentaMultaClick(Sender: TObject);

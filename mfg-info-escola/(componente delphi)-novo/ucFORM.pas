@@ -56,6 +56,7 @@ type
     bMoverCampo: TMenuItem;
     bAjustarCampo: TMenuItem;
     bConfigurarRelatorio: TMenuItem;
+    bCampoDescricao: TMenuItem;
 
     procedure ColorControl(Sender: TObject);
 
@@ -139,6 +140,8 @@ type
     procedure bConfigurarRelatorioClick(Sender: TObject);
     procedure bMoverCampoClick(Sender: TObject);
     procedure bAjustarCampoClick(Sender: TObject);
+    procedure bCampoDescricaoClickLoad(Sender: TObject; pHint : String);
+    procedure bCampoDescricaoClick(Sender: TObject);
   private
     FInEditGravarDef : Boolean;
 
@@ -242,6 +245,7 @@ uses
     cAtaMan := IfNullS(LerIni(_Caption, ATA_MAN), cAtaMan);
 
     bAjustarCampo.Checked := IfNullB(LerIni(_Caption, RED_MAN), False);
+    bCampoDescricaoClickLoad(bCampoDescricao, CAD_DES);
   end;
 
   function TcFORM.ClickButton(pName : String) : Boolean;
@@ -1704,5 +1708,29 @@ begin
   if (Result = '') then
     Result := FConfCampoList._ColMan;
 end;
+
+//--
+
+procedure TcFORM.bCampoDescricaoClickLoad(Sender: TObject; pHint : String);
+begin
+  if (pHint <> '') then
+    with TMenuItem(Sender) do begin
+      Hint := pHint;
+      Checked := IfNullB(LerIni(_Caption, Hint), Checked);
+      OnClick := bCampoDescricaoClick;
+    end;
+end;
+
+procedure TcFORM.bCampoDescricaoClick(Sender: TObject);
+begin
+  with TMenuItem(Sender) do begin
+    if (Hint <> '') then begin
+      Checked := not Checked;
+      fGravaIni(_Caption, Hint, Checked);
+    end;
+  end;
+end;
+
+//--
 
 end.

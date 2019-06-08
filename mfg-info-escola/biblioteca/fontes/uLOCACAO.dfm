@@ -261,6 +261,10 @@ inherited fLOCACAO: TfLOCACAO
       Caption = 'Informa livro'
       OnClick = bInformaLivroClick
     end
+    object bInformaLivroAuto: TMenuItem
+      Caption = 'Informa livro auto'
+      OnClick = bInformaLivroAutoClick
+    end
     object bIsentaMulta: TMenuItem
       Caption = 'Isenta multa'
       OnClick = bIsentaMultaClick
